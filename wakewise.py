@@ -261,6 +261,39 @@ def hardware_circuits(lin, W, values, keep=0.25, alpha=0.25, starts=5, seed=7):
     return circuits, names, params
 
 
+def readout_cal_circuits(isa_circuits, backend):
+    """Two calibration circuits per transpiled circuit, prepared all-0 and all-1 on the same physical qubits it measures."""
+    from qiskit import QuantumCircuit, transpile
+    cals = []
+    for c in isa_circuits:
+        phys = c.layout.final_index_layout()
+        for flip in (0, 1):
+            qc = QuantumCircuit(len(phys))
+            if flip:
+                qc.x(range(len(phys)))
+            qc.measure_all()
+            cals.append(transpile(qc, backend, initial_layout=phys, optimization_level=0))
+    return cals
+
+
+def mitigate_readout(counts, cal0, cal1, n):
+    """Tensored readout-error mitigation: estimate each qubit's flip rates from the all-0 and all-1 calibration
+    counts, then apply the inverse of each qubit's 2x2 assignment matrix to the measured distribution.
+    Returns quasi-probabilities indexed by measured integer (they can dip slightly below zero)."""
+    bit = lambda s: (int(s) >> np.arange(n)) & 1
+    p10 = sum(c * bit(s) for s, c in cal0.items()) / sum(cal0.values())        # P(read 1 | prepared 0)
+    p01 = sum(c * (1 - bit(s)) for s, c in cal1.items()) / sum(cal1.values())  # P(read 0 | prepared 1)
+    p = np.zeros(2 ** n)
+    for s, c in counts.items():
+        p[int(s)] += c
+    t = (p / p.sum()).reshape([2] * n)  # axis n-1-i holds qubit i (bit i of the integer)
+    for i in range(n):
+        A = np.array([[1 - p10[i], p01[i]], [p10[i], 1 - p01[i]]])  # columns: prepared 0/1, rows: read 0/1
+        ax = n - 1 - i
+        t = np.moveaxis(np.tensordot(np.linalg.inv(A), t, axes=([1], [ax])), 0, ax)
+    return t.reshape(-1)
+
+
 # ---------------------------------------------------------------- IBM hardware
 def load_env(path=ROOT / ".env"):
     """Read KEY=VALUE lines from a .env file into os.environ (already-set variables win)."""
@@ -301,12 +334,14 @@ def device_errors(backend):
                 median_readout_error=med("measure"))
 
 
-def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=None):
+def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=None, readout_cal=False):
     """Transpile (level 3) and sample on a backend with dynamical decoupling + gate twirling.
 
     Works for real IBM devices and for local fake backends (which ignore the error-suppression
     options; `seed` fixes their noise sampling). Saves counts, device, calibration snapshot,
     settings and per-circuit resources to JSON so results can be inspected without rerunning.
+    readout_cal=True adds all-0 / all-1 calibration circuits on each circuit's physical qubits to the same job
+    (stored under "readout_cal") for readout-error mitigation with `mitigate_readout`.
     """
     from qiskit.transpiler import generate_preset_pass_manager
     from qiskit_ibm_runtime import SamplerV2
@@ -324,9 +359,11 @@ def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=
     sampler.options.twirling.num_randomizations = "auto"
     if seed is not None:
         sampler.options.simulator.seed_simulator = seed
+    cals = readout_cal_circuits(isa, backend) if readout_cal else []
     t0 = time.time()
-    job = sampler.run(isa)
-    res = job.result()
+    job = sampler.run(isa + cals)
+    res = list(job.result())
+    res, cal_res = res[:len(isa)], res[len(isa):]
     record = dict(backend=backend.name, job_id=job.job_id(), shots=shots, wall_s=round(time.time() - t0, 1),
                   utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), calibration=device_errors(backend),
                   options=dict(optimization_level=3, seed_transpiler=1, dynamical_decoupling="XY4",
@@ -336,6 +373,8 @@ def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=
                                  depth=c.depth(), physical_qubits=c.layout.final_index_layout() if c.layout else None)
                             for c in isa],
                   counts=[{str(k): v for k, v in r.data.meas.get_int_counts().items()} for r in res])
+    if readout_cal:
+        record["readout_cal"] = [{str(k): v for k, v in r.data.meas.get_int_counts().items()} for r in cal_res]
     try:  # QPU time billed for the job; local fake backends have no usage metering
         usage = job.metrics().get("usage", {})
         record["usage_s"] = usage.get("qpu_charge_time_seconds", usage.get("quantum_seconds"))
@@ -349,17 +388,20 @@ def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=
 
 
 if __name__ == "__main__":
-    # `python wakewise.py hardware <instance> [repeats]`: run that instance's 4 circuits on IBM hardware
+    # `python wakewise.py hardware <instance> [repeats] [--readout]`: run that instance's 4 circuits on IBM hardware
     # (credentials from api.json or .env) and save results/hardware_<instance>_r<k>.json, which the notebook
     # loads. Waits for the queue, however long.
     import sys
     if sys.argv[1:2] == ["hardware"]:
-        key, repeats = sys.argv[2], int(sys.argv[3]) if len(sys.argv) > 3 else 1
+        args = [a for a in sys.argv[2:] if a != "--readout"]
+        readout = "--readout" in sys.argv
+        key, repeats = args[0], int(args[1]) if len(args) > 1 else 1
         inst = instance(key)
         circuits, names, params = hardware_circuits(inst["lin"], inst["W"], inst["values"])
         backend = hardware_backend()
         for r in range(1, repeats + 1):
-            print(f"submitting {key} run {r} to {backend.name}", flush=True)
-            rec = run_sampler(circuits, backend, shots=4000, names=names, meta=dict(instance=key, run=r, params=params),
-                              out=RESULTS / f"hardware_{key}_r{r}.json")
+            tag = f"rm{r}" if readout else f"r{r}"  # rm = run that also carries readout calibration circuits
+            print(f"submitting {key} run {tag} to {backend.name}", flush=True)
+            rec = run_sampler(circuits, backend, shots=4000, names=names, meta=dict(instance=key, run=tag, params=params),
+                              out=RESULTS / f"hardware_{key}_{tag}.json", readout_cal=readout)
             print("done:", rec["backend"], rec["job_id"], "QPU s:", rec["usage_s"], flush=True)

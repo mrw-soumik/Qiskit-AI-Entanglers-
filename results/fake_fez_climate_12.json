@@ -1,9 +1,9 @@
 {
  "backend": "fake_fez",
- "job_id": "6dd5b36f-d9ef-43ff-aa58-8af978467150",
+ "job_id": "e5fb44ff-b8ee-4ec5-b81b-4e4f6eab8cdf",
  "shots": 4000,
- "wall_s": 48.8,
- "utc": "2026-11-07T18:28:18Z",
+ "wall_s": 47.3,
+ "utc": "2026-11-07T19:10:56Z",
  "calibration": {
   "two_qubit_gate": "cz",
   "median_2q_error": 0.0039033828523107883,
@@ -6341,8 +6341,8 @@
  ],
  "usage_s": 0,
  "timestamps": {
-  "created": "2026-11-07T18:27:29.931519Z",
-  "running": "2026-11-07T18:27:29.931526Z",
-  "finished": "2026-11-07T18:27:29.931527Z"
+  "created": "2026-11-07T19:10:09.910655Z",
+  "running": "2026-11-07T19:10:09.910669Z",
+  "finished": "2026-11-07T19:10:09.910671Z"
  }
 }

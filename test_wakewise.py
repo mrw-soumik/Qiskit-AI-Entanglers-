@@ -51,6 +51,25 @@ def test_cvar_limits():
     assert np.isclose(ww.cvar(p, v, 0.1), -1.0)      # a small alpha keeps only the best outcome
 
 
+def test_readout_mitigation_inverts_known_flips():
+    n = 3
+    true = np.random.default_rng(1).dirichlet(np.ones(2 ** n))
+    p10, p01 = np.array([0.02, 0.05, 0.01]), np.array([0.04, 0.03, 0.06])
+    measured = np.zeros(2 ** n)  # push the true distribution through independent per-qubit readout flips
+    for s in range(2 ** n):
+        for m in range(2 ** n):
+            prob = 1.0
+            for i in range(n):
+                b, r = (s >> i) & 1, (m >> i) & 1
+                prob *= (1 - p10[i] if r == 0 else p10[i]) if b == 0 else (p01[i] if r == 0 else 1 - p01[i])
+            measured[m] += true[s] * prob
+    big = 10 ** 9  # calibration "counts" with these exact rates
+    cal0 = {s: big * np.prod([p10[i] if (s >> i) & 1 else 1 - p10[i] for i in range(n)]) for s in range(2 ** n)}
+    cal1 = {s: big * np.prod([1 - p01[i] if (s >> i) & 1 else p01[i] for i in range(n)]) for s in range(2 ** n)}
+    fixed = ww.mitigate_readout({s: big * q for s, q in enumerate(measured)}, cal0, cal1, n)
+    assert np.allclose(fixed, true, atol=1e-6)
+
+
 def test_summarize_scores_samples():
     lin = np.array([-1.0, -1.0])
     W = np.array([[0.0, 3.0], [3.0, 0.0]])

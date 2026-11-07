@@ -97,96 +97,255 @@
    "p_rand": 0.000244140625
   }
  },
- "regret": [
-  {
-   "design": "3-year climate",
-   "layout": "111110001111",
-   "regret in 2023 (MWh/yr)": 0,
-   "regret in 2024 (MWh/yr)": 0,
-   "regret in 2025 (MWh/yr)": 1,
-   "mean regret (MWh/yr)": 0.0
+ "robust": {
+  "years": [
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "hours": 163068,
+  "same_as_19yr_climate": true,
+  "recommended": {
+   "optimal_years": 14,
+   "mean": 19.04496042188992,
+   "median": 0.0,
+   "worst": 166.517376485961
   },
-  {
-   "design": "2023 only",
-   "layout": "111110001111",
-   "regret in 2023 (MWh/yr)": 0,
-   "regret in 2024 (MWh/yr)": 0,
-   "regret in 2025 (MWh/yr)": 1,
-   "mean regret (MWh/yr)": 0.0
+  "single_2025": {
+   "optimal_years": 5,
+   "mean": 104.22065999940921,
+   "median": 61.12029708067348,
+   "worst": 416.3574427525673
   },
-  {
-   "design": "2024 only",
-   "layout": "111110001111",
-   "regret in 2023 (MWh/yr)": 0,
-   "regret in 2024 (MWh/yr)": 0,
-   "regret in 2025 (MWh/yr)": 1,
-   "mean regret (MWh/yr)": 0.0
-  },
-  {
-   "design": "2025 only",
-   "layout": "111111001111",
-   "regret in 2023 (MWh/yr)": 357,
-   "regret in 2024 (MWh/yr)": 416,
-   "regret in 2025 (MWh/yr)": 0,
-   "mean regret (MWh/yr)": 258.0
-  }
- ],
- "per_year": [
-  {
-   "year": 2023,
-   "greedy gap": "8.2%",
-   "greedy shortfall (MWh/yr)": 704,
-   "QAOA p=3 P(opt)": 0.1192602187,
-   "x random": 488.4898556501,
-   "QAOA samples better than greedy": 0.5923187246
-  },
-  {
-   "year": 2024,
-   "greedy gap": "5.5%",
-   "greedy shortfall (MWh/yr)": 409,
-   "QAOA p=3 P(opt)": 0.0871891582,
-   "x random": 357.126791937,
-   "QAOA samples better than greedy": 0.4787500331
-  },
-  {
-   "year": 2025,
-   "greedy gap": "2.0%",
-   "greedy shortfall (MWh/yr)": 195,
-   "QAOA p=3 P(opt)": 0.0918293372,
-   "x random": 376.1329650228,
-   "QAOA samples better than greedy": 0.13282553
-  }
- ],
- "sensitivity": [
-  {
-   "base cost (fraction of E)": 0.85,
-   "turbines in optimum": 11,
-   "f*": -13660,
-   "greedy shortfall (MWh/yr)": 0,
-   "greedy gap": "0.0%"
-  },
-  {
-   "base cost (fraction of E)": 0.88,
-   "turbines in optimum": 9,
-   "f*": -8583,
-   "greedy shortfall (MWh/yr)": 0,
-   "greedy gap": "0.0%"
-  },
-  {
-   "base cost (fraction of E)": 0.9,
-   "turbines in optimum": 7,
-   "f*": -5485,
-   "greedy shortfall (MWh/yr)": 58,
-   "greedy gap": "1.1%"
-  },
-  {
-   "base cost (fraction of E)": 0.92,
-   "turbines in optimum": 6,
-   "f*": -3242,
-   "greedy shortfall (MWh/yr)": 6,
-   "greedy gap": "0.2%"
-  }
- ],
+  "greedy_miss_years": 16,
+  "greedy_gap_mean": 0.028561083520968797,
+  "greedy_gap_max": 0.08163381340771211,
+  "qaoa_p2_popt_min": 0.012014303226071334,
+  "qaoa_p2_popt_max": 0.07867692407353043,
+  "qaoa_beats_greedy_mean": 0.2013839332732167,
+  "qaoa_beats_greedy_min": 0.05329161183706024,
+  "qaoa_beats_greedy_max": 0.49956013292747337,
+  "table": [
+   {
+    "year": 2007,
+    "hours": 8737,
+    "mean hub speed (m/s)": 9.85,
+    "greedy gap": 0.0147607895,
+    "QAOA p=2 P(opt)": 0.0548124363,
+    "QAOA samples better than greedy": 0.0566620108,
+    "regret, recommended": 130.2021493656,
+    "regret, 2025-only": 0.0
+   },
+   {
+    "year": 2008,
+    "hours": 8781,
+    "mean hub speed (m/s)": 9.48,
+    "greedy gap": 0.0298425978,
+    "QAOA p=2 P(opt)": 0.0264675797,
+    "QAOA samples better than greedy": 0.1223774448,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 143.318543621
+   },
+   {
+    "year": 2009,
+    "hours": 8752,
+    "mean hub speed (m/s)": 9.36,
+    "greedy gap": 0.030780095,
+    "QAOA p=2 P(opt)": 0.024485663,
+    "QAOA samples better than greedy": 0.1471064073,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 109.4554021679
+   },
+   {
+    "year": 2010,
+    "hours": 8748,
+    "mean hub speed (m/s)": 9.45,
+    "greedy gap": 0.0415986907,
+    "QAOA p=2 P(opt)": 0.0651926763,
+    "QAOA samples better than greedy": 0.1878532252,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 273.2217301851
+   },
+   {
+    "year": 2011,
+    "hours": 8726,
+    "mean hub speed (m/s)": 9.76,
+    "greedy gap": 0.0296638908,
+    "QAOA p=2 P(opt)": 0.0136030371,
+    "QAOA samples better than greedy": 0.1419083476,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 35.0329610738
+   },
+   {
+    "year": 2012,
+    "hours": 8421,
+    "mean hub speed (m/s)": 9.77,
+    "greedy gap": 0.0201322872,
+    "QAOA p=2 P(opt)": 0.070135918,
+    "QAOA samples better than greedy": 0.0780901453,
+    "regret, recommended": 55.6241928817,
+    "regret, 2025-only": 0.0
+   },
+   {
+    "year": 2013,
+    "hours": 8621,
+    "mean hub speed (m/s)": 9.85,
+    "greedy gap": 0.014637628,
+    "QAOA p=2 P(opt)": 0.0532916118,
+    "QAOA samples better than greedy": 0.0532916118,
+    "regret, recommended": 166.517376486,
+    "regret, 2025-only": 0.0
+   },
+   {
+    "year": 2014,
+    "hours": 8617,
+    "mean hub speed (m/s)": 9.74,
+    "greedy gap": 0.0275657025,
+    "QAOA p=2 P(opt)": 0.067974634,
+    "QAOA samples better than greedy": 0.3044673301,
+    "regret, recommended": 8.8427615206,
+    "regret, 2025-only": 0.0
+   },
+   {
+    "year": 2015,
+    "hours": 8723,
+    "mean hub speed (m/s)": 9.91,
+    "greedy gap": 0.0279799363,
+    "QAOA p=2 P(opt)": 0.0161768291,
+    "QAOA samples better than greedy": 0.1404497789,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 56.6295297692
+   },
+   {
+    "year": 2016,
+    "hours": 8725,
+    "mean hub speed (m/s)": 9.49,
+    "greedy gap": 0.0496808977,
+    "QAOA p=2 P(opt)": 0.0240227023,
+    "QAOA samples better than greedy": 0.3871451816,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 124.650889658
+   },
+   {
+    "year": 2017,
+    "hours": 8703,
+    "mean hub speed (m/s)": 9.78,
+    "greedy gap": 0.0240072626,
+    "QAOA p=2 P(opt)": 0.0120143032,
+    "QAOA samples better than greedy": 0.1240628756,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 27.8719493887
+   },
+   {
+    "year": 2018,
+    "hours": 8735,
+    "mean hub speed (m/s)": 10.29,
+    "greedy gap": 0.0284531022,
+    "QAOA p=2 P(opt)": 0.021023404,
+    "QAOA samples better than greedy": 0.1273379485,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 105.7568635622
+   },
+   {
+    "year": 2019,
+    "hours": 8752,
+    "mean hub speed (m/s)": 9.9,
+    "greedy gap": 0.0,
+    "QAOA p=2 P(opt)": 0.0155097859,
+    "QAOA samples better than greedy": 0.0,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 60.1954290193
+   },
+   {
+    "year": 2020,
+    "hours": 8780,
+    "mean hub speed (m/s)": 9.61,
+    "greedy gap": 0.0,
+    "QAOA p=2 P(opt)": 0.0232582475,
+    "QAOA samples better than greedy": 0.0,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 89.2643830929
+   },
+   {
+    "year": 2021,
+    "hours": 6261,
+    "mean hub speed (m/s)": 9.57,
+    "greedy gap": 0.0,
+    "QAOA p=2 P(opt)": 0.0288428447,
+    "QAOA samples better than greedy": 0.0,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 120.063543841
+   },
+   {
+    "year": 2022,
+    "hours": 8722,
+    "mean hub speed (m/s)": 10.02,
+    "greedy gap": 0.046453375,
+    "QAOA p=2 P(opt)": 0.0171038451,
+    "QAOA samples better than greedy": 0.4278842611,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 61.1202970807
+   },
+   {
+    "year": 2023,
+    "hours": 8750,
+    "mean hub speed (m/s)": 9.14,
+    "greedy gap": 0.0816338134,
+    "QAOA p=2 P(opt)": 0.0728730156,
+    "QAOA samples better than greedy": 0.4995601329,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 357.2535747765
+   },
+   {
+    "year": 2024,
+    "hours": 8774,
+    "mean hub speed (m/s)": 8.6,
+    "greedy gap": 0.0554417777,
+    "QAOA p=2 P(opt)": 0.0518757098,
+    "QAOA samples better than greedy": 0.3328586326,
+    "regret, recommended": 0.0,
+    "regret, 2025-only": 416.3574427526
+   },
+   {
+    "year": 2025,
+    "hours": 8740,
+    "mean hub speed (m/s)": 9.38,
+    "greedy gap": 0.0200287406,
+    "QAOA p=2 P(opt)": 0.0786769241,
+    "QAOA samples better than greedy": 0.0910875982,
+    "regret, recommended": 0.667767762,
+    "regret, 2025-only": 0.0
+   }
+  ]
+ },
+ "wetland": {
+  "sites": [
+   10,
+   11
+  ],
+  "cost_mwh": 518.9193471859471,
+  "layout": "111110011100",
+  "turbines": 8,
+  "farm_mwh": 136994.36307092436,
+  "qaoa_p3_popt": 0.032494726492379125,
+  "x_random": 133.0983997127849
+ },
  "random": {
   "p_opt": 0.000244140625,
   "n95": 12269.021465384598,
@@ -235,13 +394,13 @@
     "ideal gap": 0.5940799587418639,
     "noise model P(opt)": 0.00475,
     "noise model gap": 0.5155712459408837,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.005333333333333333,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.0055625,
     "hardware P(opt) min": 0.00475,
-    "hardware P(opt) max": 0.006,
-    "hardware x random": 21.845333333333333,
-    "hardware gap mean": 0.5054507890469818,
-    "hardware gap min": 0.5026880376217476,
+    "hardware P(opt) max": 0.00625,
+    "hardware x random": 22.784,
+    "hardware gap mean": 0.5018488489240623,
+    "hardware gap min": 0.49104302855530363,
     "hardware gap max": 0.5070863642476982,
     "hardware beats greedy": 0.0
    },
@@ -251,13 +410,13 @@
     "ideal gap": 0.6179945992193827,
     "noise model P(opt)": 0.0045,
     "noise model gap": 0.576455726005938,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.003916666666666666,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.004125,
     "hardware P(opt) min": 0.00325,
-    "hardware P(opt) max": 0.0045,
-    "hardware x random": 16.042666666666666,
-    "hardware gap mean": 0.5677660663571286,
-    "hardware gap min": 0.5649361160831062,
+    "hardware P(opt) max": 0.00475,
+    "hardware x random": 16.896,
+    "hardware gap mean": 0.5665322357998139,
+    "hardware gap min": 0.5628307441278699,
     "hardware gap max": 0.570314721394078,
     "hardware beats greedy": 0.0
    },
@@ -267,13 +426,13 @@
     "ideal gap": 0.6685064353958448,
     "noise model P(opt)": 0.0075,
     "noise model gap": 0.5814716971607732,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.0031666666666666666,
-    "hardware P(opt) min": 0.00275,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.002875,
+    "hardware P(opt) min": 0.002,
     "hardware P(opt) max": 0.0035,
-    "hardware x random": 12.970666666666666,
-    "hardware gap mean": 0.5080570262440371,
-    "hardware gap min": 0.5035874719445913,
+    "hardware x random": 11.776,
+    "hardware gap mean": 0.5055828075619282,
+    "hardware gap min": 0.4981601515156013,
     "hardware gap max": 0.5143685692107032,
     "hardware beats greedy": 0.0
    },
@@ -283,13 +442,13 @@
     "ideal gap": -3.4580562408244264e-16,
     "noise model P(opt)": 0.00025,
     "noise model gap": 0.011814605852556065,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.0003333333333333333,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.00025,
     "hardware P(opt) min": 0.0,
     "hardware P(opt) max": 0.00075,
-    "hardware x random": 1.3653333333333333,
-    "hardware gap mean": -0.01295656101657435,
-    "hardware gap min": -0.01599729588827771,
+    "hardware x random": 1.024,
+    "hardware gap mean": -0.015060790233953706,
+    "hardware gap min": -0.021373477886091778,
     "hardware gap max": -0.01017817359386233,
     "hardware beats greedy": 0.0
    }
@@ -301,15 +460,15 @@
     "ideal gap": 0.5578966588568341,
     "noise model P(opt)": 0.00725,
     "noise model gap": 0.49017173827415,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.005416666666666667,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.0056875,
     "hardware P(opt) min": 0.00425,
     "hardware P(opt) max": 0.0075,
-    "hardware x random": 22.186666666666667,
-    "hardware gap mean": 0.461030858829713,
+    "hardware x random": 23.296,
+    "hardware gap mean": 0.46230512051803946,
     "hardware gap min": 0.4576731014223886,
-    "hardware gap max": 0.4635453970722486,
-    "hardware beats greedy": 0.15341666666666667
+    "hardware gap max": 0.4661279055830187,
+    "hardware beats greedy": 0.15375
    },
    "p1_sparse": {
     "2q gates": 119.0,
@@ -317,15 +476,15 @@
     "ideal gap": 0.5776280947634457,
     "noise model P(opt)": 0.00475,
     "noise model gap": 0.5377687163424564,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.005999999999999999,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.005625,
     "hardware P(opt) min": 0.004,
     "hardware P(opt) max": 0.0075,
-    "hardware x random": 24.575999999999997,
-    "hardware gap mean": 0.5269396300113678,
+    "hardware x random": 23.04,
+    "hardware gap mean": 0.5272917017382392,
     "hardware gap min": 0.5201078709300093,
     "hardware gap max": 0.5312899586575501,
-    "hardware beats greedy": 0.17266666666666666
+    "hardware beats greedy": 0.1753125
    },
    "p2_sparse": {
     "2q gates": 279.0,
@@ -333,15 +492,15 @@
     "ideal gap": 0.6352096834121794,
     "noise model P(opt)": 0.00875,
     "noise model gap": 0.5526681957472428,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.002166666666666667,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.0021875,
     "hardware P(opt) min": 0.0015,
     "hardware P(opt) max": 0.003,
-    "hardware x random": 8.874666666666668,
-    "hardware gap mean": 0.4791030119261331,
-    "hardware gap min": 0.47626658532446026,
+    "hardware x random": 8.96,
+    "hardware gap mean": 0.4776460648058449,
+    "hardware gap min": 0.4732752234449804,
     "hardware gap max": 0.48206718499421264,
-    "hardware beats greedy": 0.16166666666666665
+    "hardware beats greedy": 0.16025
    },
    "control_uniform": {
     "2q gates": 0.0,
@@ -349,15 +508,15 @@
     "ideal gap": -3.4303470862078795e-16,
     "noise model P(opt)": 0.00025,
     "noise model gap": 0.011819970579157195,
-    "hardware runs": 3.0,
-    "hardware P(opt) mean": 0.00016666666666666666,
+    "hardware runs": 4.0,
+    "hardware P(opt) mean": 0.0001875,
     "hardware P(opt) min": 0.0,
     "hardware P(opt) max": 0.00025,
-    "hardware x random": 0.6826666666666666,
-    "hardware gap mean": -0.012750940695894155,
+    "hardware x random": 0.768,
+    "hardware gap mean": -0.01432665748167618,
     "hardware gap min": -0.01949382278049571,
     "hardware gap max": -0.006831035211709164,
-    "hardware beats greedy": 0.01833333333333333
+    "hardware beats greedy": 0.0185625
    }
   },
   "y2025_12": {
@@ -530,6 +689,18 @@
      "median_2q_error": 0.0015213620668354938,
      "median_readout_error": 0.0078125
     }
+   },
+   {
+    "backend": "ibm_quebec",
+    "job_id": "dbnncp8qtr0c73adbsi0",
+    "utc": "2026-11-07T19:05:39Z",
+    "shots": 4000,
+    "usage_s": 16,
+    "calibration": {
+     "two_qubit_gate": "cz",
+     "median_2q_error": 0.0015213620668354938,
+     "median_readout_error": 0.0078125
+    }
    }
   ],
   "y2023_12": [
@@ -568,6 +739,18 @@
      "median_2q_error": 0.0015213620668354938,
      "median_readout_error": 0.0078125
     }
+   },
+   {
+    "backend": "ibm_quebec",
+    "job_id": "dbnnd7k4148s7391ahe0",
+    "utc": "2026-11-07T19:06:34Z",
+    "shots": 4000,
+    "usage_s": 16,
+    "calibration": {
+     "two_qubit_gate": "cz",
+     "median_2q_error": 0.0015213620668354938,
+     "median_readout_error": 0.0078125
+    }
    }
   ],
   "y2025_12": [
@@ -599,6 +782,62 @@
    }
   ]
  },
+ "mitigation": [
+  {
+   "instance": "climate_12",
+   "circuit": "p1_full",
+   "job": "dbnncp8qtr0c73adbsi0",
+   "raw P(opt)": 0.00625,
+   "mitigated P(opt)": 0.0065323496,
+   "raw gap": 0.4910430286,
+   "mitigated gap": 0.4978610905
+  },
+  {
+   "instance": "climate_12",
+   "circuit": "p1_sparse",
+   "job": "dbnncp8qtr0c73adbsi0",
+   "raw P(opt)": 0.00475,
+   "mitigated P(opt)": 0.0047420599,
+   "raw gap": 0.5628307441,
+   "mitigated gap": 0.5668235974
+  },
+  {
+   "instance": "climate_12",
+   "circuit": "p2_sparse",
+   "job": "dbnncp8qtr0c73adbsi0",
+   "raw P(opt)": 0.002,
+   "mitigated P(opt)": 0.0064280199,
+   "raw gap": 0.4981601515,
+   "mitigated gap": 0.5389152284
+  },
+  {
+   "instance": "y2023_12",
+   "circuit": "p1_full",
+   "job": "dbnnd7k4148s7391ahe0",
+   "raw P(opt)": 0.0065,
+   "mitigated P(opt)": 0.0068094573,
+   "raw gap": 0.4661279056,
+   "mitigated gap": 0.4726311168
+  },
+  {
+   "instance": "y2023_12",
+   "circuit": "p1_sparse",
+   "job": "dbnnd7k4148s7391ahe0",
+   "raw P(opt)": 0.0045,
+   "mitigated P(opt)": 0.0045839853,
+   "raw gap": 0.5283479169,
+   "mitigated gap": 0.5325992787
+  },
+  {
+   "instance": "y2023_12",
+   "circuit": "p2_sparse",
+   "job": "dbnnd7k4148s7391ahe0",
+   "raw P(opt)": 0.00225,
+   "mitigated P(opt)": 0.0070859384,
+   "raw gap": 0.4732752234,
+   "mitigated gap": 0.5032284459
+  }
+ ],
  "noise_model": {
   "name": "fake_fez",
   "calibration": {
