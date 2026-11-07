@@ -1,9 +1,9 @@
 {
  "backend": "fake_fez",
- "job_id": "2abd6e72-4617-4f35-ad1a-655011f0002b",
+ "job_id": "846b7211-77dd-4ba7-874a-58dc60d61454",
  "shots": 4000,
- "wall_s": 9.3,
- "utc": "2026-11-07T16:39:22Z",
+ "wall_s": 8.8,
+ "utc": "2026-11-07T16:47:44Z",
  "calibration": {
   "two_qubit_gate": "cz",
   "median_2q_error": 0.0039033828523107883,
@@ -24,7 +24,7 @@
   "control_uniform"
  ],
  "meta": {
-  "instance": "hw_9",
+  "instance": "9 sites",
   "params": {
    "p1_full": [
     2.5523329334123352,
@@ -1355,5 +1355,10 @@
    "29": 2
   }
  ],
- "usage_s": 0
+ "usage_s": 0,
+ "timestamps": {
+  "created": "2026-11-07T16:47:36.374488Z",
+  "running": "2026-11-07T16:47:36.374498Z",
+  "finished": "2026-11-07T16:47:36.374499Z"
+ }
 }

@@ -104,61 +104,138 @@
    "gap_closed": 0.8769399735256425
   }
  },
- "noise": {
-  "p1_full": {
-   "2q gates (Quebec)": 130.0,
-   "2q gates (Fez)": 144.0,
-   "ideal P(opt)": 0.0646,
-   "ideal gap": 0.8558750436511798,
-   "Quebec model P(opt)": 0.03225,
-   "Quebec model gap": 0.627706519020407,
-   "Fez model P(opt)": 0.05,
-   "Fez model gap": 0.7665686419149339
+ "devices": {
+  "9": {
+   "p1_full": {
+    "2q gates (Heron model)": 144.0,
+    "ideal P(opt)": 0.06528798898429078,
+    "ideal gap": 0.8575673101314434,
+    "noise model P(opt)": 0.05,
+    "noise model gap": 0.7665686419149339,
+    "hardware 2q gates": 144.0,
+    "hardware P(opt)": 0.05225,
+    "hardware gap": 0.7428999238868075,
+    "hardware x random": 26.752
+   },
+   "p1_sparse": {
+    "2q gates (Heron model)": 78.0,
+    "ideal P(opt)": 0.07839257752116661,
+    "ideal gap": 0.8714986795791074,
+    "noise model P(opt)": 0.0745,
+    "noise model gap": 0.8183372199011008,
+    "hardware 2q gates": 78.0,
+    "hardware P(opt)": 0.0545,
+    "hardware gap": 0.7842200378271181,
+    "hardware x random": 27.904
+   },
+   "p2_sparse": {
+    "2q gates (Heron model)": 195.0,
+    "ideal P(opt)": 0.16751925569662565,
+    "ideal gap": 0.9012114783760612,
+    "noise model P(opt)": 0.099,
+    "noise model gap": 0.7990793811717112,
+    "hardware 2q gates": 195.0,
+    "hardware P(opt)": 0.10325,
+    "hardware gap": 0.7536292575800139,
+    "hardware x random": 52.864
+   },
+   "control_uniform": {
+    "2q gates (Heron model)": 0.0,
+    "ideal P(opt)": 0.0019531250000000004,
+    "ideal gap": 5.979600847347918e-16,
+    "noise model P(opt)": 0.00275,
+    "noise model gap": 0.009607934288683754,
+    "hardware 2q gates": 0.0,
+    "hardware P(opt)": 0.00225,
+    "hardware gap": -0.01438803737561645,
+    "hardware x random": 1.152
+   }
   },
-  "p1_sparse": {
-   "2q gates (Quebec)": 81.0,
-   "2q gates (Fez)": 78.0,
-   "ideal P(opt)": 0.0745,
-   "ideal gap": 0.8721765461478028,
-   "Quebec model P(opt)": 0.0565,
-   "Quebec model gap": 0.7483648246576273,
-   "Fez model P(opt)": 0.0745,
-   "Fez model gap": 0.8183372199011008
-  },
-  "p2_sparse": {
-   "2q gates (Quebec)": 195.0,
-   "2q gates (Fez)": 195.0,
-   "ideal P(opt)": 0.1613,
-   "ideal gap": 0.9002417957407294,
-   "Quebec model P(opt)": 0.05175,
-   "Quebec model gap": 0.6834147539829565,
-   "Fez model P(opt)": 0.099,
-   "Fez model gap": 0.7990793811717112
-  },
-  "control_uniform": {
-   "2q gates (Quebec)": 0.0,
-   "2q gates (Fez)": 0.0,
-   "ideal P(opt)": 0.0029,
-   "ideal gap": 0.0003501055749787005,
-   "Quebec model P(opt)": 0.0035,
-   "Quebec model gap": 0.018166116186099823,
-   "Fez model P(opt)": 0.00275,
-   "Fez model gap": 0.009607934288683754
+  "12": {
+   "p1_full": {
+    "2q gates (Heron model)": 228.0,
+    "ideal P(opt)": 0.02009645903974727,
+    "ideal gap": 0.7317761139738017,
+    "noise model P(opt)": 0.01,
+    "noise model gap": 0.6417932515737657,
+    "hardware 2q gates": 228.0,
+    "hardware P(opt)": 0.01025,
+    "hardware gap": 0.6021766810412825,
+    "hardware x random": 41.984
+   },
+   "p1_sparse": {
+    "2q gates (Heron model)": 135.0,
+    "ideal P(opt)": 0.02175231807303037,
+    "ideal gap": 0.7538405020621838,
+    "noise model P(opt)": 0.01525,
+    "noise model gap": 0.7040134795607738,
+    "hardware 2q gates": 135.0,
+    "hardware P(opt)": 0.01275,
+    "hardware gap": 0.6853343872822931,
+    "hardware x random": 52.224
+   },
+   "p2_sparse": {
+    "2q gates (Heron model)": 333.0,
+    "ideal P(opt)": 0.04805547827666314,
+    "ideal gap": 0.8210276919025149,
+    "noise model P(opt)": 0.02125,
+    "noise model gap": 0.7200195938332591,
+    "hardware 2q gates": 333.0,
+    "hardware P(opt)": 0.0165,
+    "hardware gap": 0.5992887294763125,
+    "hardware x random": 67.584
+   },
+   "control_uniform": {
+    "2q gates (Heron model)": 0.0,
+    "ideal P(opt)": 0.00024414062499999997,
+    "ideal gap": -5.89649733607616e-16,
+    "noise model P(opt)": 0.00025,
+    "noise model gap": 0.011199405215250941,
+    "hardware 2q gates": 0.0,
+    "hardware P(opt)": 0.0,
+    "hardware gap": -0.019295606792865055,
+    "hardware x random": 0.0
+   }
   }
  },
- "noise_calibration": {
-  "fake_quebec": {
-   "two_qubit_gate": "ecr",
-   "median_2q_error": 0.009094441795285402,
-   "median_readout_error": 0.017333984375
-  },
-  "fake_fez": {
+ "p_rand": {
+  "9": 0.001953125,
+  "12": 0.000244140625
+ },
+ "noise_model": {
+  "name": "fake_fez",
+  "calibration": {
    "two_qubit_gate": "cz",
    "median_2q_error": 0.0039033828523107883,
    "median_readout_error": 0.007568359375
   }
  },
- "hardware": null,
+ "hardware": {
+  "9": {
+   "backend": "ibm_quebec",
+   "job_id": "dbnl9h0ou4as73b4p1kg",
+   "utc": "2026-11-07T16:42:49Z",
+   "shots": 4000,
+   "usage_s": 7,
+   "calibration": {
+    "two_qubit_gate": "cz",
+    "median_2q_error": 0.0015213620668354938,
+    "median_readout_error": 0.0078125
+   }
+  },
+  "12": {
+   "backend": "ibm_quebec",
+   "job_id": "dbnla58ou4as73b4p2p0",
+   "utc": "2026-11-07T16:43:19Z",
+   "shots": 4000,
+   "usage_s": 7,
+   "calibration": {
+    "two_qubit_gate": "cz",
+    "median_2q_error": 0.0015213620668354938,
+    "median_readout_error": 0.0078125
+   }
+  }
+ },
  "validation": {
   "pairwise": [
    2927.0,

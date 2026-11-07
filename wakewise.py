@@ -316,9 +316,11 @@ def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=
                                  depth=c.depth(), physical_qubits=c.layout.final_index_layout() if c.layout else None)
                             for c in isa],
                   counts=[{str(k): v for k, v in r.data.meas.get_int_counts().items()} for r in res])
-    try:
-        record["usage_s"] = job.usage()
-    except Exception:  # local fake backends have no usage metering
+    try:  # QPU time billed for the job; local fake backends have no usage metering
+        usage = job.metrics().get("usage", {})
+        record["usage_s"] = usage.get("qpu_charge_time_seconds", usage.get("quantum_seconds"))
+        record["timestamps"] = job.metrics().get("timestamps")
+    except Exception:
         record["usage_s"] = None
     if out:
         Path(out).parent.mkdir(exist_ok=True)

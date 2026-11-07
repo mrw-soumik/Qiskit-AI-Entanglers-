@@ -14,8 +14,8 @@ Wind turbines slow the air behind them (their *wake*), so turbines placed in eac
 | Physics | DTU PyWake: a badly placed neighbour costs up to 1.9% of a turbine's output; a dense 12-turbine block loses 3.6% |
 | Classical | 12-site optimum builds 10 turbines (≈ 180 GWh/yr, ≈ 10,600 NL homes); greedy falls 195 MWh/yr short; greedy is optimal on 9 sites |
 | QAOA, noiseless, 12 qubits | depth 3 with CVaR training returns the optimal layout in 9.2% of shots (≈ 380× random): 31 shots find it with 95% confidence vs 12,269 for random guessing |
-| QAOA, IBM Quebec noise model, 9 qubits | sparsified depth-1 circuit returns the optimum in 5.7% of shots (28× random); sparsifying cuts two-qubit gates 130 → 81 |
-| IBM hardware | Section 6 of the notebook and `results/hardware_9site.json` |
+| **Real hardware: IBM Quantum System One in Quebec** (`ibm_quebec`, 156 qubits) | 12 qubits: the optimal layout in 1.65% of shots, **68× random guessing**; 9 qubits: 10.3% of shots (53× random). A control circuit that should be random is (gap closed ≈ 0). 7 s of QPU time per job; job IDs in `results/hardware_*.json` |
+| IBM Heron noise model (simulator) | predicts the hardware results closely (Section 6); dropping weak couplings cuts two-qubit gates by about 40% |
 | Model check | QUBO ranks layouts like full PyWake simulations (rank correlation 0.99 with Jensen and Gaussian wake models); its optimum is best under both |
 
 No quantum advantage is claimed: at these sizes the exact answer is computable, which is what lets us measure QAOA's quality honestly.
