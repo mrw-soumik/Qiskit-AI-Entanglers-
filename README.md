@@ -1,8 +1,8 @@
 # WakeWise NL: wake-aware wind-turbine siting for Newfoundland's west coast with QAOA
 
-**Team AI Entanglers** (Mostafa Wasib and Mahmoud Al-Moghrabi) · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
+**Team AI Entanglers** (Mostafa Wasib and Mahmoud Al-Moghrabi) · Team 8 · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
 
-Wind turbines slow the air behind them (their *wake*), so turbines placed in each other's wakes waste wind. On a parcel at Wreckhouse, NL, beside the Codroy Valley where a large wind-to-hydrogen project is proposed, we ask which candidate sites should get a turbine so the farm delivers the most net clean energy, whether that choice holds up across **19 years of real wind**, and what protecting a sensitive wetland costs. Using real hourly wind from Environment and Climate Change Canada and **DTU PyWake** (an industry-standard wind-farm simulator), every wake loss is between a *pair* of turbines, so the problem is a QUBO that maps one-to-one onto an Ising Hamiltonian: turbine value = Z field, wake loss = ZZ coupling. We solve it with **QAOA in Qiskit** and test it against exact enumeration, a greedy planner and random guessing on the same instances: noiseless, under an IBM noise model, and on real hardware, IBM Quantum System One in Quebec (`ibm_quebec`), with repeated runs.
+Wind turbines slow the air behind them (their *wake*), so turbines placed in each other's wakes waste wind. At Wreckhouse, NL, beside the Codroy Valley where a large wind-to-hydrogen project is proposed, we ask which candidate sites should get a turbine so the farm delivers the most net clean energy, whether that choice holds up across **19 years of real wind** and on **real terrain**, and how far today's quantum hardware can take the search. Using real hourly wind from Environment and Climate Change Canada and **DTU PyWake** (an industry-standard wind-farm simulator), every wake loss is between a *pair* of turbines, so the problem is a QUBO that maps one-to-one onto an Ising Hamiltonian: turbine value = Z field, wake loss = ZZ coupling. We solve it with **QAOA in Qiskit**, set its angles without a training loop (an **AI predictor** tested against parameter transfer), and test everything against exact enumeration, a greedy planner and random guessing: noiseless, under an IBM noise model, and on **IBM Quantum System One in Quebec** (`ibm_quebec`) from 12 up to **24 qubits**, with repeated runs and controls.
 
 **Start here:** [`wakewise.ipynb`](wakewise.ipynb). All results are saved in it; its first section documents environment, data, seeds and how to reproduce everything. Slides: [`slides/`](slides/).
 
@@ -11,15 +11,16 @@ Wind turbines slow the air behind them (their *wake*), so turbines placed in eac
 | | |
 |---|---|
 | Real input | 26,264 hours of 2023-2025 Wreckhouse wind for the design; 163,068 hours (2007-2025) to test it. One 4 MW turbine alone ≈ 17,600 MWh/yr (50% capacity factor) |
-| Physics | DTU PyWake: a badly placed neighbour costs up to 2.4% of a turbine's output; a dense 12-turbine block loses 4.2% |
-| **Recommended layout** | 9 turbines on the 12-site parcel, ≈ 154 GWh/yr (≈ 9,100 NL homes). Also the optimum for the full 19-year climate, and the best possible layout in **14 of 19** single years (average shortfall 19 MWh/yr). A 2025-only design: best in 5 of 19 (average shortfall 104 MWh/yr) |
-| Classical baseline | Greedy finds the 3-year optimum but misses the best layout in 16 of 19 single years (up to 8.2% short, 704 MWh/yr) |
-| QAOA, noiseless, 12 qubits | Depth 3 with CVaR training returns the optimal layout in 8.4% of shots (≈ 345× random): 34 shots for 95% confidence vs 12,269. Across the 19 single years, 1 in 5 samples beat greedy on average where greedy misses |
-| **Real hardware: `ibm_quebec`** (10 jobs, 88 s of QPU) | 3-year climate, 4 independent runs: the optimum ≈ 23× more often than random. 2023 wind, 4 runs: 15-18% of samples beat the greedy planner (random control: 2%). Readout-error mitigation: up to 3.2× on the deepest circuit. 16 qubits: clearly better than random (gap closed up to 0.42) but the optimum was not sampled |
-| Model check | QUBO ranks layouts like full PyWake simulations (rank correlation 0.99 with Jensen and Gaussian wake models); its optimum is best under both |
+| **Recommended layout** (flat parcel) | 9 turbines, ≈ 154 GWh/yr (≈ 9,100 NL homes). Best possible in **14 of 19** single years (a 2025-only design: 5 of 19). Greedy misses the best layout in 16 of 19 years |
+| QAOA, noiseless, 12 qubits | Depth 3 with CVaR training returns the optimal layout in 8.4% of shots (≈ 345× random) |
+| Hardware, flat parcel | 4 independent runs: the optimum ≈ 23× more often than random; 2023 wind: 15%-18% of samples beat greedy (random control: 2%). Calibration circuits exposed a faulty qubit (101, misread 1 as 0 in 65% of shots); faulty qubits are now kept out of layouts |
+| **Real terrain** (screening level) | DTU Global Wind Atlas + Copernicus elevation: 24 plateau sites chosen by rule (423-550 m, 9.7-10.9 m/s). Designed on all 19 years: best in 12 of 19 years (2023-2025 design: 4) |
+| **AI vs parameter transfer** | On held-out wind years our AI keeps 100% / 92% of trained-angle quality (depth 1 / 2), so no training loop is needed; one transferred angle set keeps 99% / 100%. Honest negative result for the AI |
+| **24 qubits on `ibm_quebec`** | Gap closed 0.79 / 0.59 / 0.60 / 0.66 at 12 / 16 / 20 / 24 qubits (noiseless 0.84 / 0.65 / 0.66 / 0.76). At 24 qubits the exact best of 16,777,216 layouts appeared 4× in 24,000 shots (chance: 1 in 16.8 million). Matched control (same gates, one sign flipped): -1.09 to -0.85, below random as physics predicts |
+| Model check | QUBO ranks layouts like full PyWake simulations (rank correlation 0.99 with Jensen and 0.99 with Gaussian wake models) |
 | Wetland scenario | Keeping turbines out of an illustrative wetland buffer costs 519 MWh/yr; QAOA finds the new optimum 133× more often than random |
 
-No quantum advantage is claimed: at these sizes the exact answer is computable, which is what lets us measure QAOA's quality honestly.
+No quantum advantage is claimed: even at 24 sites the exact answer is computable in seconds, which is what lets us measure QAOA's quality honestly. Hardware: 21 jobs, 174 s of QPU in total.
 
 ## Run it
 
@@ -28,23 +29,25 @@ git clone https://github.com/mrw-soumik/Qiskit-AI-Entanglers-.git && cd Qiskit-A
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python test_wakewise.py                                                   # self-checks
-jupyter nbconvert --to notebook --execute --inplace wakewise.ipynb        # ~20 min, no IBM account needed
+jupyter nbconvert --to notebook --execute --inplace wakewise.ipynb        # ~30 min, no IBM account needed
+python make_ai_training_set.py                                            # optional: rebuild the AI training set (~7 min, 10 cores)
 ```
 
-To rerun a hardware experiment: `cp .env.example .env` (or create `api.json`), paste your IBM Quantum `apikey` and `crn`, then
-`python wakewise.py hardware climate_12 3` (add `--readout` for readout-calibration circuits) and re-execute the notebook. `.env` and `api.json` are gitignored.
+To rerun a hardware experiment: `cp .env.example .env` (or create `api.json`), paste your IBM Quantum `apikey` and `crn`, then e.g.
+`python wakewise.py hardware climate_12 3` (flags: `--readout` adds readout calibration, `--healthy` keeps faulty qubits out of the layout, `--ai` runs a terrain instance with the predicted and transferred angles, e.g. `python wakewise.py hardware terrain_24 2 --ai`) and re-execute the notebook. `.env` and `api.json` are gitignored.
 
 ## Files
 
 | Path | What |
 |---|---|
 | `wakewise.ipynb` | Working notebook with saved outputs |
-| `wakewise.py` | Wind data, PyWake wind-farm model, QUBO, Ising mapping, baselines, QAOA (incl. CVaR), readout mitigation and IBM hardware helpers |
-| `test_wakewise.py` | Self-checks (Ising energy equals QUBO for every bitstring, bit order, wake physics, CVaR, readout mitigation, scoring) |
-| `data/` | Frozen ECCC wind data for 2007-2025 and its provenance (`data/SOURCE.md`) |
-| `results/` | Noise-model and hardware runs (device, job ID, options, calibration snapshot, counts) and `summary.json` (every number in the slides) |
+| `wakewise.py` | Wind data, terrain (wind atlas, elevation, site rule, PyWake `XRSite`), wind-farm model, QUBO, Ising mapping, baselines, QAOA (CVaR, fast exact simulator), readout mitigation, faulty-qubit-aware IBM hardware helpers |
+| `make_ai_training_set.py` | Builds the AI training set (285 instances with trained QAOA angles) |
+| `test_wakewise.py` | Self-checks (Ising energy equals QUBO for every bitstring, fast simulator equals Qiskit's statevector, bit order, wake physics, terrain rule and speed-ups, CVaR, readout mitigation, scoring) |
+| `data/` | Frozen ECCC wind 2007-2025, wind-atlas and elevation windows, and their provenance (`data/SOURCE.md`) |
+| `results/` | Noise-model and hardware runs (device, job ID, options, calibration snapshot, counts), the AI training set and angles, and `summary.json` (every number in the slides) |
 | `figures/`, `slides/` | Figures and the presentation (PPTX and PDF) |
 
 ## Credits
 
-QAOA workflow pattern adapted from Tinh Bui's *Quantum Optimization* workshop notebook (Qiskit Fall Fest 2026); IBM runtime setup from IBM's *Qiskit 101* notebook (Apache 2.0) and the Fall Fest IBM hardware example; Qiskit, Qiskit Aer, Qiskit IBM Runtime; DTU PyWake (MIT); ECCC hourly climate data (Open Government Licence, Canada); Jensen/Park and Bastankhah-Porte-Agel wake models; QAOA (Farhi et al., 2014); CVaR objective (Barkoutsos et al., 2020). Full credits and our own contribution: Section 12 of the notebook.
+QAOA workflow pattern adapted from Tinh Bui's *Quantum Optimization* workshop notebook (Qiskit Fall Fest 2026); IBM runtime setup from IBM's *Qiskit 101* notebook (Apache 2.0) and the Fall Fest IBM hardware example; Qiskit, Qiskit Aer, Qiskit IBM Runtime; DTU PyWake (MIT); scikit-learn; rasterio; ECCC hourly climate data (Open Government Licence, Canada); Global Wind Atlas (DTU with the World Bank Group/ESMAP, CC BY 4.0); Copernicus DEM GLO-90 (© DLR e.V. and © Airbus Defence and Space GmbH, provided under COPERNICUS by the European Union and ESA). Methods: Jensen/Park and Bastankhah-Porte-Agel wake models; QAOA (Farhi et al., 2014); CVaR objective (Barkoutsos et al., 2020); WAsP ruggedness index (Bowen and Mortensen, 1996); QAOA parameter transfer (Brandão et al., 2018; Shaydulin et al., 2023; Sureshbabu et al., 2024). Full credits and our own contribution: Section 15 of the notebook.

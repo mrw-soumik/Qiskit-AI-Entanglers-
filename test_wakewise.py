@@ -16,6 +16,44 @@ def test_ising_matches_qubo_for_every_bitstring():
     assert np.allclose(energies, ww.qubo_values(ww.bits(np.arange(2 ** n), n), lin, W))
 
 
+def test_fast_qaoa_matches_qiskit_statevector():
+    from qiskit.quantum_info import Statevector
+    rng = np.random.default_rng(1)
+    n = 5
+    lin = rng.normal(size=n)
+    W = np.triu(rng.normal(size=(n, n)), 1)
+    W += W.T
+    H, _ = ww.qubo_to_ising(lin, W)
+    H = H / np.abs(H.coeffs).max()
+    diag = ww.ising_diagonal(lin, W)
+    for p in (1, 2):
+        th = rng.uniform(0, np.pi, 2 * p)
+        assert np.allclose(ww.qaoa_probabilities(diag, th), Statevector(ww.qaoa_circuit(H, p).assign_parameters(th)).probabilities())
+
+
+def test_chunked_exact_equals_one_shot_enumeration():
+    rng = np.random.default_rng(2)
+    n = 10
+    lin = rng.normal(size=n)
+    W = np.triu(rng.normal(size=(n, n)), 1)
+    W += W.T
+    v_full = ww.qubo_values(ww.bits(np.arange(2 ** n), n), lin, W)
+    x, f, v = ww.exact(lin, W, chunk=100)  # 1024 layouts in uneven chunks
+    assert np.allclose(v, v_full) and f == v_full.min() and ww.qubo_values(x, lin, W)[0] == f
+
+
+def test_terrain_parcel_follows_its_rule_and_speedups_raise_energy():
+    sites, meta = ww.terrain_sites()
+    assert len(sites) == 24 and (sites.elevation > 10).all() and (sites.slope <= 0.10).all()
+    assert (np.abs(sites.rix - meta["rix_station"]) <= 0.05).all() and np.hypot(sites.x, sites.y).max() <= 10_000
+    assert sites.gwa_ws.iloc[0] == sites.gwa_ws.max()  # the parcel grows from its windiest site
+    first = sites.iloc[:4]                                # speed-ups 1.14, 1.13, 1.11, 1.09
+    wd, u = ww.load_wind((2025,))
+    E = [ww.farm_energy(ww.terrain_model(first), first[["x", "y"]].to_numpy()[[i]], wd, u)[0] for i in range(4)]
+    E_station = ww.farm_energy(ww.wake_model(), np.zeros((1, 2)), wd, u)[0]
+    assert min(E) > E_station and np.argsort(E).tolist() == np.argsort(first.speedup.to_numpy()).tolist()
+
+
 def test_three_site_case_by_hand():
     # Each site alone is worth 10; sites 0 and 1 together lose 15, site 2 is independent.
     lin = np.array([-10.0, -10.0, -10.0])

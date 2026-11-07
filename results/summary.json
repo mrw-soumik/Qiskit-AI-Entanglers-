@@ -1429,5 +1429,951 @@
    6339.0,
    5146.0
   ]
+ },
+ "faulty_qubit": {
+  "flips": [
+   {
+    "instance": "climate_12",
+    "circuit": "p1_full",
+    "worst physical qubit": 47,
+    "its P(read 0 | prepared 1)": 0.01225,
+    "median P(read 0 | prepared 1)": 0.00575,
+    "max P(read 1 | prepared 0)": 0.012
+   },
+   {
+    "instance": "climate_12",
+    "circuit": "p1_sparse",
+    "worst physical qubit": 50,
+    "its P(read 0 | prepared 1)": 0.0325,
+    "median P(read 0 | prepared 1)": 0.004875,
+    "max P(read 1 | prepared 0)": 0.008
+   },
+   {
+    "instance": "climate_12",
+    "circuit": "p2_sparse",
+    "worst physical qubit": 101,
+    "its P(read 0 | prepared 1)": 0.67875,
+    "median P(read 0 | prepared 1)": 0.0095,
+    "max P(read 1 | prepared 0)": 0.146
+   },
+   {
+    "instance": "y2023_12",
+    "circuit": "p1_full",
+    "worst physical qubit": 47,
+    "its P(read 0 | prepared 1)": 0.01175,
+    "median P(read 0 | prepared 1)": 0.005,
+    "max P(read 1 | prepared 0)": 0.0125
+   },
+   {
+    "instance": "y2023_12",
+    "circuit": "p1_sparse",
+    "worst physical qubit": 50,
+    "its P(read 0 | prepared 1)": 0.01075,
+    "median P(read 0 | prepared 1)": 0.005875,
+    "max P(read 1 | prepared 0)": 0.006
+   },
+   {
+    "instance": "y2023_12",
+    "circuit": "p2_sparse",
+    "worst physical qubit": 101,
+    "its P(read 0 | prepared 1)": 0.6475,
+    "median P(read 0 | prepared 1)": 0.011,
+    "max P(read 1 | prepared 0)": 0.1435
+   }
+  ],
+  "healthy": [
+   {
+    "instance": "climate_12",
+    "circuit": "p1_full",
+    "2q gates (re-run)": 228,
+    "original 4 runs: P(opt)": 0.0055625,
+    "healthy re-run: P(opt)": 0.0025,
+    "original 4 runs: gap": 0.5018488489,
+    "healthy re-run: gap": 0.5006391348,
+    "healthy re-run: beats greedy": 0.0,
+    "qubit 101 used (original / re-run)": "False / False"
+   },
+   {
+    "instance": "climate_12",
+    "circuit": "p1_sparse",
+    "2q gates (re-run)": 119,
+    "original 4 runs: P(opt)": 0.004125,
+    "healthy re-run: P(opt)": 0.00475,
+    "original 4 runs: gap": 0.5665322358,
+    "healthy re-run: gap": 0.5680084738,
+    "healthy re-run: beats greedy": 0.0,
+    "qubit 101 used (original / re-run)": "False / False"
+   },
+   {
+    "instance": "climate_12",
+    "circuit": "p2_sparse",
+    "2q gates (re-run)": 279,
+    "original 4 runs: P(opt)": 0.002875,
+    "healthy re-run: P(opt)": 0.00125,
+    "original 4 runs: gap": 0.5055828076,
+    "healthy re-run: gap": 0.3731567512,
+    "healthy re-run: beats greedy": 0.0,
+    "qubit 101 used (original / re-run)": "True / False"
+   },
+   {
+    "instance": "y2023_12",
+    "circuit": "p1_full",
+    "2q gates (re-run)": 228,
+    "original 4 runs: P(opt)": 0.0056875,
+    "healthy re-run: P(opt)": 0.0085,
+    "original 4 runs: gap": 0.4623051205,
+    "healthy re-run: gap": 0.4821801829,
+    "healthy re-run: beats greedy": 0.1775,
+    "qubit 101 used (original / re-run)": "False / False"
+   },
+   {
+    "instance": "y2023_12",
+    "circuit": "p1_sparse",
+    "2q gates (re-run)": 119,
+    "original 4 runs: P(opt)": 0.005625,
+    "healthy re-run: P(opt)": 0.00525,
+    "original 4 runs: gap": 0.5272917017,
+    "healthy re-run: gap": 0.5434142892,
+    "healthy re-run: beats greedy": 0.1755,
+    "qubit 101 used (original / re-run)": "False / False"
+   },
+   {
+    "instance": "y2023_12",
+    "circuit": "p2_sparse",
+    "2q gates (re-run)": 279,
+    "original 4 runs: P(opt)": 0.0021875,
+    "healthy re-run: P(opt)": 0.00175,
+    "original 4 runs: gap": 0.4776460648,
+    "healthy re-run: gap": 0.3769642211,
+    "healthy re-run: beats greedy": 0.10475,
+    "qubit 101 used (original / re-run)": "True / False"
+   }
+  ],
+  "healthy_jobs": [
+   "dbnogsk4148s7391bp80",
+   "dbnoh6s4148s7391bpi0"
+  ]
+ },
+ "terrain": {
+  "station_gwa": 9.5473511074069,
+  "station_series": 9.042621321947163,
+  "rix_station": 0.0753322863741134,
+  "candidates": 95,
+  "elevation": [
+   422.9785427266425,
+   549.9507844945024
+  ],
+  "speedup": [
+   1.0201410150706716,
+   1.1433791775534157
+  ],
+  "gwa": [
+   9.739644449946175,
+   10.916242457000594
+  ],
+  "dist_km": [
+   6.532419153728579,
+   9.943088051505931
+  ],
+  "E_site": [
+   17904.979677364165,
+   19668.852568084123
+  ],
+  "E_ref": 18651.156305457578,
+  "instances": [
+   {
+    "instance": "terrain_12",
+    "qubits": 12,
+    "layouts": 4096,
+    "turbines in optimum": 10,
+    "net value of optimum (MWh/yr)": 13891.8280357741,
+    "greedy shortfall (MWh/yr)": 8.0331044079,
+    "random guess P(opt)": 0.0002441406,
+    "optimal layout (site 0 first)": "111110111110"
+   },
+   {
+    "instance": "terrain_16",
+    "qubits": 16,
+    "layouts": 65536,
+    "turbines in optimum": 11,
+    "net value of optimum (MWh/yr)": 14043.1152059254,
+    "greedy shortfall (MWh/yr)": 10.4523394961,
+    "random guess P(opt)": 1.52588e-05,
+    "optimal layout (site 0 first)": "1111101111101000"
+   },
+   {
+    "instance": "terrain_20",
+    "qubits": 20,
+    "layouts": 1048576,
+    "turbines in optimum": 12,
+    "net value of optimum (MWh/yr)": 14893.5431383711,
+    "greedy shortfall (MWh/yr)": 2.0112699917,
+    "random guess P(opt)": 9.537e-07,
+    "optimal layout (site 0 first)": "11111011111010001000"
+   },
+   {
+    "instance": "terrain_24",
+    "qubits": 24,
+    "layouts": 16777216,
+    "turbines in optimum": 12,
+    "net value of optimum (MWh/yr)": 14893.5431383711,
+    "greedy shortfall (MWh/yr)": 2.0112699917,
+    "random guess P(opt)": 5.96e-08,
+    "optimal layout (site 0 first)": "111110111110100010000000"
+   }
+  ],
+  "designs": [
+   {
+    "index": "designed on 2023-2025",
+    "layout": "1111101111101000",
+    "turbines": 11,
+    "years optimal (of 19)": 4,
+    "mean regret (MWh/yr)": 90,
+    "worst-year regret (MWh/yr)": 221
+   },
+   {
+    "index": "designed on 2007-2025",
+    "layout": "1111111111001100",
+    "turbines": 12,
+    "years optimal (of 19)": 12,
+    "mean regret (MWh/yr)": 61,
+    "worst-year regret (MWh/yr)": 509
+   }
+  ],
+  "greedy_miss_years": 5,
+  "qaoa": [
+   {
+    "instance": "terrain_12",
+    "p": 1,
+    "P(opt)": 0.0157464548,
+    "x random": 64.4974790062,
+    "gap closed": 0.8196116887,
+    "beats greedy": 0.0157464548
+   },
+   {
+    "instance": "terrain_12",
+    "p": 2,
+    "P(opt)": 0.0425948715,
+    "x random": 174.4685937261,
+    "gap closed": 0.8773318492,
+    "beats greedy": 0.0425948715
+   },
+   {
+    "instance": "terrain_12",
+    "p": 3,
+    "P(opt)": 0.0594485197,
+    "x random": 243.5011366168,
+    "gap closed": 0.9088845223,
+    "beats greedy": 0.0594485197
+   },
+   {
+    "instance": "terrain_16",
+    "p": 1,
+    "P(opt)": 0.0016891722,
+    "x random": 110.7015874836,
+    "gap closed": 0.6504675585,
+    "beats greedy": 0.0016891722
+   },
+   {
+    "instance": "terrain_16",
+    "p": 2,
+    "P(opt)": 0.0122621569,
+    "x random": 803.6127120352,
+    "gap closed": 0.8031091737,
+    "beats greedy": 0.0122621569
+   },
+   {
+    "instance": "terrain_16",
+    "p": 3,
+    "P(opt)": 0.0174402373,
+    "x random": 1142.9633931416,
+    "gap closed": 0.8505106282,
+    "beats greedy": 0.0174402373
+   }
+  ]
+ },
+ "ai": {
+  "instances": 285,
+  "train": 195,
+  "test": 90,
+  "table": [
+   {
+    "depth p": 1,
+    "method": "AI predictor",
+    "gap closed": 0.7105379383,
+    "P(opt)": 0.0985116134,
+    "share of trained quality": 1.0003784577
+   },
+   {
+    "depth p": 1,
+    "method": "trained for this instance",
+    "gap closed": 0.7092086835,
+    "P(opt)": 0.0907688672,
+    "share of trained quality": 1.0
+   },
+   {
+    "depth p": 1,
+    "method": "transfer: best fixed angles",
+    "gap closed": 0.7084087164,
+    "P(opt)": 0.0839969988,
+    "share of trained quality": 0.988673982
+   },
+   {
+    "depth p": 1,
+    "method": "transfer: mean angles",
+    "gap closed": 0.6887522742,
+    "P(opt)": 0.0919192722,
+    "share of trained quality": 0.9585023718
+   },
+   {
+    "depth p": 2,
+    "method": "AI predictor",
+    "gap closed": 0.6894115967,
+    "P(opt)": 0.0677257735,
+    "share of trained quality": 0.9205216533
+   },
+   {
+    "depth p": 2,
+    "method": "trained for this instance",
+    "gap closed": 0.7531696811,
+    "P(opt)": 0.0864674142,
+    "share of trained quality": 1.0
+   },
+   {
+    "depth p": 2,
+    "method": "transfer: best fixed angles",
+    "gap closed": 0.7579227439,
+    "P(opt)": 0.169884664,
+    "share of trained quality": 0.9969116221
+   },
+   {
+    "depth p": 2,
+    "method": "transfer: mean angles",
+    "gap closed": 0.1023941359,
+    "P(opt)": 0.0058801771,
+    "share of trained quality": 0.1133680607
+   }
+  ],
+  "scale_ideal": [
+   {
+    "instance": "terrain_12",
+    "depth p": 1,
+    "method": "AI predictor",
+    "qubits": 12,
+    "gap closed": 0.8424447101,
+    "P(opt)": 0.0149594453,
+    "x random": 61.2738879932
+   },
+   {
+    "instance": "terrain_12",
+    "depth p": 1,
+    "method": "transfer: best fixed angles",
+    "qubits": 12,
+    "gap closed": 0.8578153361,
+    "P(opt)": 0.0153049609,
+    "x random": 62.6891197805
+   },
+   {
+    "instance": "terrain_12",
+    "depth p": 1,
+    "method": "transfer: mean angles",
+    "qubits": 12,
+    "gap closed": 0.8326934147,
+    "P(opt)": 0.0158667338,
+    "x random": 64.9901414502
+   },
+   {
+    "instance": "terrain_12",
+    "depth p": 2,
+    "method": "AI predictor",
+    "qubits": 12,
+    "gap closed": 0.8965291835,
+    "P(opt)": 0.0290945233,
+    "x random": 119.1711673486
+   },
+   {
+    "instance": "terrain_12",
+    "depth p": 2,
+    "method": "transfer: best fixed angles",
+    "qubits": 12,
+    "gap closed": 0.9129108324,
+    "P(opt)": 0.014901348,
+    "x random": 61.0359214005
+   },
+   {
+    "instance": "terrain_12",
+    "depth p": 2,
+    "method": "transfer: mean angles",
+    "qubits": 12,
+    "gap closed": 0.3721557063,
+    "P(opt)": 0.0024016506,
+    "x random": 9.8371608727
+   },
+   {
+    "instance": "terrain_16",
+    "depth p": 1,
+    "method": "AI predictor",
+    "qubits": 16,
+    "gap closed": 0.6491468603,
+    "P(opt)": 0.001013148,
+    "x random": 66.3976641853
+   },
+   {
+    "instance": "terrain_16",
+    "depth p": 1,
+    "method": "transfer: best fixed angles",
+    "qubits": 16,
+    "gap closed": 0.670659071,
+    "P(opt)": 0.0009320654,
+    "x random": 61.0838376438
+   },
+   {
+    "instance": "terrain_16",
+    "depth p": 1,
+    "method": "transfer: mean angles",
+    "qubits": 16,
+    "gap closed": 0.6483772891,
+    "P(opt)": 0.0010141215,
+    "x random": 66.4614653422
+   },
+   {
+    "instance": "terrain_16",
+    "depth p": 2,
+    "method": "AI predictor",
+    "qubits": 16,
+    "gap closed": 0.7635550109,
+    "P(opt)": 0.0039302945,
+    "x random": 257.5757834232
+   },
+   {
+    "instance": "terrain_16",
+    "depth p": 2,
+    "method": "transfer: best fixed angles",
+    "qubits": 16,
+    "gap closed": 0.7504428785,
+    "P(opt)": 0.0020585221,
+    "x random": 134.9073026728
+   },
+   {
+    "instance": "terrain_16",
+    "depth p": 2,
+    "method": "transfer: mean angles",
+    "qubits": 16,
+    "gap closed": 0.3248539191,
+    "P(opt)": 0.0002608084,
+    "x random": 17.0923364172
+   },
+   {
+    "instance": "terrain_20",
+    "depth p": 1,
+    "method": "AI predictor",
+    "qubits": 20,
+    "gap closed": 0.6613085711,
+    "P(opt)": 0.0004927649,
+    "x random": 516.7014385369
+   },
+   {
+    "instance": "terrain_20",
+    "depth p": 1,
+    "method": "transfer: best fixed angles",
+    "qubits": 20,
+    "gap closed": 0.6688192849,
+    "P(opt)": 0.0003754248,
+    "x random": 393.6614155894
+   },
+   {
+    "instance": "terrain_20",
+    "depth p": 1,
+    "method": "transfer: mean angles",
+    "qubits": 20,
+    "gap closed": 0.6682493048,
+    "P(opt)": 0.0004626811,
+    "x random": 485.1563101843
+   },
+   {
+    "instance": "terrain_20",
+    "depth p": 2,
+    "method": "AI predictor",
+    "qubits": 20,
+    "gap closed": 0.7296510146,
+    "P(opt)": 0.0010894338,
+    "x random": 1142.3541777407
+   },
+   {
+    "instance": "terrain_20",
+    "depth p": 2,
+    "method": "transfer: best fixed angles",
+    "qubits": 20,
+    "gap closed": 0.7759033858,
+    "P(opt)": 0.0013810879,
+    "x random": 1448.175585473
+   },
+   {
+    "instance": "terrain_20",
+    "depth p": 2,
+    "method": "transfer: mean angles",
+    "qubits": 20,
+    "gap closed": 0.3076343913,
+    "P(opt)": 5.04374e-05,
+    "x random": 52.8874814151
+   },
+   {
+    "instance": "terrain_24",
+    "depth p": 1,
+    "method": "AI predictor",
+    "qubits": 24,
+    "gap closed": 0.756577865,
+    "P(opt)": 0.0004505025,
+    "x random": 7558.177748054
+   },
+   {
+    "instance": "terrain_24",
+    "depth p": 1,
+    "method": "transfer: best fixed angles",
+    "qubits": 24,
+    "gap closed": 0.7542686549,
+    "P(opt)": 0.0003097736,
+    "x random": 5197.1393036989
+   },
+   {
+    "instance": "terrain_24",
+    "depth p": 1,
+    "method": "transfer: mean angles",
+    "qubits": 24,
+    "gap closed": 0.7577779113,
+    "P(opt)": 0.0004007152,
+    "x random": 6722.8851308205
+   },
+   {
+    "instance": "terrain_24",
+    "depth p": 2,
+    "method": "AI predictor",
+    "qubits": 24,
+    "gap closed": 0.7522749311,
+    "P(opt)": 0.0006386917,
+    "x random": 10715.4685512889
+   },
+   {
+    "instance": "terrain_24",
+    "depth p": 2,
+    "method": "transfer: best fixed angles",
+    "qubits": 24,
+    "gap closed": 0.8282792672,
+    "P(opt)": 0.0012240131,
+    "x random": 20535.5314507071
+   },
+   {
+    "instance": "terrain_24",
+    "depth p": 2,
+    "method": "transfer: mean angles",
+    "qubits": 24,
+    "gap closed": 0.219396149,
+    "P(opt)": 1.07516e-05,
+    "x random": 180.3817216993
+   }
+  ],
+  "fixed_p2": [
+   2.2776771708197914,
+   2.892181975469499,
+   1.0992108962110942,
+   2.556270911064526
+  ]
+ },
+ "scaling": {
+  "table": [
+   {
+    "instance": "terrain_12",
+    "circuit": "p1_sparse",
+    "qubits": 12,
+    "ideal gap": 0.8424447101,
+    "ideal P(opt)": 0.0149594453,
+    "random best-of-4000 gap %": 0.0823005231,
+    "2q gates": 80.0,
+    "hardware runs": 2,
+    "hardware gap": 0.7908735453,
+    "hardware gap min": 0.7858329848,
+    "hardware gap max": 0.7959141059,
+    "hardware P(opt)": 0.01375,
+    "hardware x random": 56.32,
+    "hardware best-of-4000 gap %": 0.0,
+    "hardware beats greedy": 0.01375
+   },
+   {
+    "instance": "terrain_12",
+    "circuit": "p2_sparse",
+    "qubits": 12,
+    "ideal gap": 0.9129108324,
+    "ideal P(opt)": 0.014901348,
+    "random best-of-4000 gap %": 0.0823005231,
+    "2q gates": 172.0,
+    "hardware runs": 2,
+    "hardware gap": 0.8172099159,
+    "hardware gap min": 0.8150273943,
+    "hardware gap max": 0.8193924375,
+    "hardware P(opt)": 0.012875,
+    "hardware x random": 52.736,
+    "hardware best-of-4000 gap %": 0.0,
+    "hardware beats greedy": 0.012875
+   },
+   {
+    "instance": "terrain_12",
+    "circuit": "control_uniform",
+    "qubits": 12,
+    "ideal gap": 0.0,
+    "ideal P(opt)": 0.0002441406,
+    "random best-of-4000 gap %": 0.0823005231,
+    "2q gates": 0.0,
+    "hardware runs": 2,
+    "hardware gap": -0.0113423212,
+    "hardware gap min": -0.0165419779,
+    "hardware gap max": -0.0061426645,
+    "hardware P(opt)": 0.000375,
+    "hardware x random": 1.536,
+    "hardware best-of-4000 gap %": 0.0,
+    "hardware beats greedy": 0.000375
+   },
+   {
+    "instance": "terrain_12",
+    "circuit": "control_flipped",
+    "qubits": 12,
+    "ideal gap": -1.2038370081,
+    "ideal P(opt)": 1.1e-09,
+    "random best-of-4000 gap %": 0.0823005231,
+    "2q gates": 80.0,
+    "hardware runs": 2,
+    "hardware gap": -1.092093878,
+    "hardware gap min": -1.0942232874,
+    "hardware gap max": -1.0899644686,
+    "hardware P(opt)": 0.0,
+    "hardware x random": 0.0,
+    "hardware best-of-4000 gap %": 6.4309886646,
+    "hardware beats greedy": 0.0
+   },
+   {
+    "instance": "terrain_16",
+    "circuit": "p1_sparse",
+    "qubits": 16,
+    "ideal gap": 0.6491468603,
+    "ideal P(opt)": 0.001013148,
+    "random best-of-4000 gap %": 1.0737548264,
+    "2q gates": 154.0,
+    "hardware runs": 2,
+    "hardware gap": 0.5856573597,
+    "hardware gap min": 0.5854956492,
+    "hardware gap max": 0.5858190703,
+    "hardware P(opt)": 0.00075,
+    "hardware x random": 49.152,
+    "hardware best-of-4000 gap %": 0.0,
+    "hardware beats greedy": 0.00075
+   },
+   {
+    "instance": "terrain_16",
+    "circuit": "p2_sparse",
+    "qubits": 16,
+    "ideal gap": 0.7504428785,
+    "ideal P(opt)": 0.0020585221,
+    "random best-of-4000 gap %": 1.0737548264,
+    "2q gates": 326.0,
+    "hardware runs": 2,
+    "hardware gap": 0.6355064589,
+    "hardware gap min": 0.6309768962,
+    "hardware gap max": 0.6400360217,
+    "hardware P(opt)": 0.001125,
+    "hardware x random": 73.728,
+    "hardware best-of-4000 gap %": 0.0,
+    "hardware beats greedy": 0.001125
+   },
+   {
+    "instance": "terrain_16",
+    "circuit": "control_uniform",
+    "qubits": 16,
+    "ideal gap": 0.0,
+    "ideal P(opt)": 1.52588e-05,
+    "random best-of-4000 gap %": 1.0737548264,
+    "2q gates": 0.0,
+    "hardware runs": 2,
+    "hardware gap": -0.0042905311,
+    "hardware gap min": -0.0066802521,
+    "hardware gap max": -0.00190081,
+    "hardware P(opt)": 0.0,
+    "hardware x random": 0.0,
+    "hardware best-of-4000 gap %": 1.3898922685,
+    "hardware beats greedy": 0.0
+   },
+   {
+    "instance": "terrain_16",
+    "circuit": "control_flipped",
+    "qubits": 16,
+    "ideal gap": -0.9903462556,
+    "ideal P(opt)": 1e-10,
+    "random best-of-4000 gap %": 1.0737548264,
+    "2q gates": 154.0,
+    "hardware runs": 2,
+    "hardware gap": -0.8621806342,
+    "hardware gap min": -0.8664559031,
+    "hardware gap max": -0.8579053652,
+    "hardware P(opt)": 0.0,
+    "hardware x random": 0.0,
+    "hardware best-of-4000 gap %": 17.2087466783,
+    "hardware beats greedy": 0.0
+   },
+   {
+    "instance": "terrain_20",
+    "circuit": "p1_sparse",
+    "qubits": 20,
+    "ideal gap": 0.6613085711,
+    "ideal P(opt)": 0.0004927649,
+    "random best-of-4000 gap %": 3.9573398454,
+    "2q gates": 161.0,
+    "hardware runs": 2,
+    "hardware gap": 0.6033290927,
+    "hardware gap min": 0.6008220284,
+    "hardware gap max": 0.6058361571,
+    "hardware P(opt)": 0.001,
+    "hardware x random": 1048.576,
+    "hardware best-of-4000 gap %": 0.0,
+    "hardware beats greedy": 0.001
+   },
+   {
+    "instance": "terrain_20",
+    "circuit": "p2_sparse",
+    "qubits": 20,
+    "ideal gap": 0.7759033858,
+    "ideal P(opt)": 0.0013810879,
+    "random best-of-4000 gap %": 3.9573398454,
+    "2q gates": 394.0,
+    "hardware runs": 2,
+    "hardware gap": 0.6373192911,
+    "hardware gap min": 0.6368732691,
+    "hardware gap max": 0.637765313,
+    "hardware P(opt)": 0.0005,
+    "hardware x random": 524.288,
+    "hardware best-of-4000 gap %": 0.0,
+    "hardware beats greedy": 0.0005
+   },
+   {
+    "instance": "terrain_20",
+    "circuit": "control_uniform",
+    "qubits": 20,
+    "ideal gap": -3.828527259e-16,
+    "ideal P(opt)": 9.537e-07,
+    "random best-of-4000 gap %": 3.9573398454,
+    "2q gates": 0.0,
+    "hardware runs": 2,
+    "hardware gap": -0.0036493269,
+    "hardware gap min": -0.0057863852,
+    "hardware gap max": -0.0015122686,
+    "hardware P(opt)": 0.0,
+    "hardware x random": 0.0,
+    "hardware best-of-4000 gap %": 5.6878450525,
+    "hardware beats greedy": 0.0
+   },
+   {
+    "instance": "terrain_20",
+    "circuit": "control_flipped",
+    "qubits": 20,
+    "ideal gap": -0.9793335876,
+    "ideal P(opt)": 0.0,
+    "random best-of-4000 gap %": 3.9573398454,
+    "2q gates": 161.0,
+    "hardware runs": 2,
+    "hardware gap": -0.8451333191,
+    "hardware gap min": -0.8458641912,
+    "hardware gap max": -0.8444024469,
+    "hardware P(opt)": 0.0,
+    "hardware x random": 0.0,
+    "hardware best-of-4000 gap %": 34.2740744772,
+    "hardware beats greedy": 0.0
+   },
+   {
+    "instance": "terrain_24",
+    "circuit": "p1_sparse",
+    "qubits": 24,
+    "ideal gap": 0.756577865,
+    "ideal P(opt)": 0.0004505025,
+    "random best-of-4000 gap %": 10.0870256146,
+    "2q gates": 213.0,
+    "hardware runs": 3,
+    "hardware gap": 0.6579603774,
+    "hardware gap min": 0.6552495229,
+    "hardware gap max": 0.6594895922,
+    "hardware P(opt)": 0.00025,
+    "hardware x random": 4194.304,
+    "hardware best-of-4000 gap %": 0.0126558301,
+    "hardware beats greedy": 0.00025
+   },
+   {
+    "instance": "terrain_24",
+    "circuit": "p2_sparse",
+    "qubits": 24,
+    "ideal gap": 0.8282792672,
+    "ideal P(opt)": 0.0012240131,
+    "random best-of-4000 gap %": 10.0870256146,
+    "2q gates": 480.0,
+    "hardware runs": 3,
+    "hardware gap": 0.6724035263,
+    "hardware gap min": 0.6669906435,
+    "hardware gap max": 0.6772424835,
+    "hardware P(opt)": 8.33333e-05,
+    "hardware x random": 1398.1013333333,
+    "hardware best-of-4000 gap %": 0.0171572662,
+    "hardware beats greedy": 8.33333e-05
+   },
+   {
+    "instance": "terrain_24",
+    "circuit": "control_uniform",
+    "qubits": 24,
+    "ideal gap": 0.0,
+    "ideal P(opt)": 5.96e-08,
+    "random best-of-4000 gap %": 10.0870256146,
+    "2q gates": 0.0,
+    "hardware runs": 3,
+    "hardware gap": 0.0012338769,
+    "hardware gap min": -0.0077672594,
+    "hardware gap max": 0.0136122206,
+    "hardware P(opt)": 0.0,
+    "hardware x random": 0.0,
+    "hardware best-of-4000 gap %": 9.4489588929,
+    "hardware beats greedy": 0.0
+   },
+   {
+    "instance": "terrain_24",
+    "circuit": "control_flipped",
+    "qubits": 24,
+    "ideal gap": -1.0615738131,
+    "ideal P(opt)": 3.171619077e-18,
+    "random best-of-4000 gap %": 10.0870256146,
+    "2q gates": 213.0,
+    "hardware runs": 3,
+    "hardware gap": -0.8815137255,
+    "hardware gap min": -0.887846377,
+    "hardware gap max": -0.8758816814,
+    "hardware P(opt)": 0.0,
+    "hardware x random": 0.0,
+    "hardware best-of-4000 gap %": 58.4124295234,
+    "hardware beats greedy": 0.0
+   }
+  ],
+  "eps": 0.0005077288880306763,
+  "runs": {
+   "terrain_12": [
+    {
+     "job_id": "dbnoef0ou4as73b4t8t0",
+     "utc": "2026-11-07T20:17:17Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    },
+    {
+     "job_id": "dbnoejgqtr0c73add1t0",
+     "utc": "2026-11-07T20:17:34Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    }
+   ],
+   "terrain_16": [
+    {
+     "job_id": "dbnoeqoqtr0c73add250",
+     "utc": "2026-11-07T20:18:06Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    },
+    {
+     "job_id": "dbnoevtt7fqc73ajuu8g",
+     "utc": "2026-11-07T20:18:26Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    }
+   ],
+   "terrain_20": [
+    {
+     "job_id": "dbnof80qtr0c73add2j0",
+     "utc": "2026-11-07T20:19:01Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    },
+    {
+     "job_id": "dbnofdgqtr0c73add2qg",
+     "utc": "2026-11-07T20:19:22Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    }
+   ],
+   "terrain_24": [
+    {
+     "job_id": "dbnofsc4148s7391bo90",
+     "utc": "2026-11-07T20:20:26Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    },
+    {
+     "job_id": "dbnog2oqtr0c73add3eg",
+     "utc": "2026-11-07T20:20:48Z",
+     "usage_s": 7,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    },
+    {
+     "job_id": "dbnogeoou4as73b4tb5g",
+     "utc": "2026-11-07T20:21:48Z",
+     "usage_s": 16,
+     "calibration": {
+      "two_qubit_gate": "cz",
+      "median_2q_error": 0.0015213620668354938,
+      "median_readout_error": 0.0078125
+     }
+    }
+   ]
+  },
+  "mitigation": [
+   {
+    "instance": "terrain_24",
+    "circuit": "p1_sparse",
+    "job": "dbnogeoou4as73b4tb5g",
+    "raw gap": 0.6591420171,
+    "mitigated gap": 0.6634074785,
+    "raw P(opt)": 0.0005,
+    "mitigated P(opt)": 0.0005580074
+   },
+   {
+    "instance": "terrain_24",
+    "circuit": "p2_sparse",
+    "job": "dbnogeoou4as73b4tb5g",
+    "raw gap": 0.6772424835,
+    "mitigated gap": 0.68300994,
+    "raw P(opt)": 0.00025,
+    "mitigated P(opt)": 0.0002825186
+   }
+  ]
  }
 }
