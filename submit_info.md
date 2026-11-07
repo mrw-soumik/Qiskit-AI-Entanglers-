@@ -1,5 +1,6 @@
 # Qiskit Fall Fest 2026 submission
 
+- **Team number:** 8
 - **Team name:** AI Entanglers
 - **Team members:** Mostafa Wasib, Mahmoud Al-Moghrabi
 - **GitHub repository:** https://github.com/mrw-soumik/Qiskit-AI-Entanglers- (branch `main`)
