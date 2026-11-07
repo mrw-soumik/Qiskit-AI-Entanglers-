@@ -1,0 +1,112 @@
+{
+ "hours": 8740,
+ "mean_hub_ms": 9.38357774960139,
+ "E": 13993.277536375068,
+ "capacity_factor": 0.3993515278645853,
+ "max_pair_loss": 613.4166104798654,
+ "max_pair_loss_frac": 0.04383652142146891,
+ "spearman": 0.9918059848840407,
+ "main": {
+  "sites": 12,
+  "f_opt": -5105.302431155342,
+  "turbines": 6,
+  "f_greedy": -4616.901127369678,
+  "greedy_gap": 0.09566549883610667,
+  "f_random": -3086.655483360685,
+  "greedy_gap_closed": 0.7580551149277315
+ },
+ "hw9": {
+  "sites": 9,
+  "f_opt": -4717.721563470078,
+  "turbines": 5,
+  "greedy_gap": 0.05946149342278144,
+  "p_opt_random": 0.001953125
+ },
+ "sensitivity": [
+  {
+   "base cost (fraction of E)": 0.8,
+   "turbines in optimum": 9,
+   "f*": -14142,
+   "greedy turbines": 10,
+   "greedy gap": "3.2%"
+  },
+  {
+   "base cost (fraction of E)": 0.88,
+   "turbines in optimum": 6,
+   "f*": -5105,
+   "greedy turbines": 6,
+   "greedy gap": "9.6%"
+  },
+  {
+   "base cost (fraction of E)": 0.93,
+   "turbines in optimum": 3,
+   "f*": -1589,
+   "greedy turbines": 3,
+   "greedy gap": "6.6%"
+  }
+ ],
+ "random": {
+  "p_opt": 0.000244140625,
+  "n95": 12269.021465384598,
+  "within100": 0.024121358687114514,
+  "beats_greedy": 0.013916015625
+ },
+ "qaoa": {
+  "1": {
+   "p_opt": 0.003,
+   "gap_closed": 0.470524669265317,
+   "n95": 997.078808322613,
+   "within100": 0.2595157404602174,
+   "beats_greedy": 0.1097
+  },
+  "2": {
+   "p_opt": 0.0081,
+   "gap_closed": 0.5760655437264679,
+   "n95": 368.3435940743205,
+   "within100": 0.5566068022443151,
+   "beats_greedy": 0.1953
+  },
+  "3": {
+   "p_opt": 0.0126,
+   "gap_closed": 0.6206110661189963,
+   "n95": 236.25549801514163,
+   "within100": 0.7186076487520253,
+   "beats_greedy": 0.2591
+  }
+ },
+ "noise": {
+  "p1_full": {
+   "2q gates (Heron)": 144.0,
+   "depth": 275.0,
+   "ideal P(opt)": 0.0186,
+   "ideal gap": 0.4521658709548244,
+   "FakeFez P(opt)": 0.013,
+   "FakeFez gap": 0.3907889949206637
+  },
+  "p1_sparse": {
+   "2q gates (Heron)": 64.0,
+   "depth": 141.0,
+   "ideal P(opt)": 0.0134,
+   "ideal gap": 0.4395075685620307,
+   "FakeFez P(opt)": 0.01125,
+   "FakeFez gap": 0.40652493772672293
+  },
+  "p2_sparse": {
+   "2q gates (Heron)": 146.0,
+   "depth": 271.0,
+   "ideal P(opt)": 0.0216,
+   "ideal gap": 0.5651124823824349,
+   "FakeFez P(opt)": 0.01975,
+   "FakeFez gap": 0.5059302144894895
+  },
+  "control_uniform": {
+   "2q gates (Heron)": 0.0,
+   "depth": 4.0,
+   "ideal P(opt)": 0.0015,
+   "ideal gap": 0.005376459541531179,
+   "FakeFez P(opt)": 0.00175,
+   "FakeFez gap": 0.012454296831536654
+  }
+ },
+ "hardware": null
+}
