@@ -24,7 +24,7 @@
   "control_uniform"
  ],
  "meta": {
-  "instance": "12 sites",
+  "instance": "y2025_12",
   "params": {
    "p1_full": [
     2.539793171108732,
@@ -40,7 +40,8 @@
     0.9594413936512014,
     2.4275638255202288
    ]
-  }
+  },
+  "run": 1
  },
  "circuits": [
   {

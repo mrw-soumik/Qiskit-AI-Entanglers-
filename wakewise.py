@@ -19,6 +19,7 @@ DATA, RESULTS = ROOT / "data", ROOT / "results"
 D, HUB, RATED_KW = 130.0, 110.0, 4000  # rotor diameter (m), hub height (m), rated power
 WAKE_K = 0.075                          # Jensen wake-expansion constant, common onshore value
 HOURS = 8760
+YEARS = (2023, 2024, 2025)            # Wreckhouse hourly wind years used as the long-term climate
 
 ECCC_URL = ("https://api.weather.gc.ca/collections/climate-hourly/items?CLIMATE_IDENTIFIER={cid}"
             "&LOCAL_YEAR={year}&properties=LOCAL_DATE,WIND_DIRECTION,WIND_SPEED&limit=10000&f=json")
@@ -35,14 +36,15 @@ def fetch_wind(cid="8404343", year=2025, path=None):
     return df, url
 
 
-def load_wind(path=DATA / "wreckhouse_2025_hourly.csv", hub=HUB, alpha=0.14):
-    """Return per-hour wind direction (degrees, blowing FROM) and hub-height speed (m/s).
+def load_wind(years=None, hub=HUB, alpha=0.14):
+    """Per-hour wind direction (degrees, blowing FROM) and hub-height speed (m/s) for the given years
+    (default: all of YEARS, i.e. a multi-year wind climate with every hour weighted equally).
 
     ECCC gives direction in tens of degrees (0 = calm) and 10 m speed in km/h. Hours with a
     missing value are dropped; calm hours stay in with zero speed so the energy average is fair.
     The 10 m -> hub extrapolation uses a power-law shear profile (alpha is an assumption).
     """
-    df = pd.read_csv(path)
+    df = pd.concat([pd.read_csv(DATA / f"wreckhouse_{y}_hourly.csv") for y in (years or YEARS)])
     ok = df.WIND_DIRECTION.notna() & df.WIND_SPEED.notna()
     wd = df.WIND_DIRECTION[ok].to_numpy(float) * 10
     u = df.WIND_SPEED[ok].to_numpy(float) / 3.6 * (hub / 10) ** alpha
@@ -108,6 +110,24 @@ def layout_net(x, xy, wd, u, cost, model):
     """Net value (MWh/yr) of a layout with every wake acting at once: a check of the pairwise QUBO."""
     on = np.flatnonzero(x)
     return farm_energy(model, xy[on], wd, u).sum() - cost[on].sum()
+
+
+# Named test instances: (wind years, grid rows, grid cols). "climate" = all of YEARS.
+INSTANCES = {"climate_12": (YEARS, 3, 4), "climate_16": (YEARS, 4, 4), "y2023_12": ((2023,), 3, 4),
+             "y2024_12": ((2024,), 3, 4), "y2025_12": ((2025,), 3, 4)}
+
+
+def instance(key, model=None, cost_frac=0.88):
+    """Build a named instance: wind, PyWake QUBO, exact optimum, greedy answer and the random-guess baseline."""
+    years, rows, cols = INSTANCES[key]
+    wd, u = load_wind(years)
+    xy = grid(rows, cols, 5 * D)
+    lin, W, info = build_qubo(xy, wd, u, cost_frac=cost_frac, model=model)
+    x_opt, f_opt, values = exact(lin, W)
+    x_gr = greedy(lin, W)
+    return dict(key=key, years=years, wd=wd, u=u, xy=xy, rows=rows, cols=cols, lin=lin, W=W, E=info["E"], cost=info["cost"],
+                x_opt=x_opt, f_opt=f_opt, values=values, f_rand=values.mean(), x_gr=x_gr, f_gr=qubo_values(x_gr, lin, W)[0],
+                p_rand=float(np.isclose(values, f_opt).mean()))
 
 
 # ---------------------------------------------------------------- QUBO tools and baselines
@@ -329,18 +349,17 @@ def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=
 
 
 if __name__ == "__main__":
-    # `python wakewise.py hardware`: run the 9-site and 12-site circuits on IBM hardware (credentials from api.json
-    # or .env) and save results/hardware_{9,12}site.json, which the notebook loads. Waits for the queue.
+    # `python wakewise.py hardware <instance> [repeats]`: run that instance's 4 circuits on IBM hardware
+    # (credentials from api.json or .env) and save results/hardware_<instance>_r<k>.json, which the notebook
+    # loads. Waits for the queue, however long.
     import sys
     if sys.argv[1:2] == ["hardware"]:
-        wd, u = load_wind()
+        key, repeats = sys.argv[2], int(sys.argv[3]) if len(sys.argv) > 3 else 1
+        inst = instance(key)
+        circuits, names, params = hardware_circuits(inst["lin"], inst["W"], inst["values"])
         backend = hardware_backend()
-        for rows, cols in [(3, 3), (3, 4)]:
-            n = rows * cols
-            lin, W, _ = build_qubo(grid(rows, cols, 5 * D), wd, u)
-            _, _, values = exact(lin, W)
-            circuits, names, params = hardware_circuits(lin, W, values)
-            print(f"submitting {n}-site circuits to {backend.name}", flush=True)
-            rec = run_sampler(circuits, backend, shots=4000, names=names, meta=dict(instance=f"{n} sites", params=params),
-                              out=RESULTS / f"hardware_{n}site.json")
-            print("done:", rec["backend"], rec["job_id"], "usage_s:", rec["usage_s"], flush=True)
+        for r in range(1, repeats + 1):
+            print(f"submitting {key} run {r} to {backend.name}", flush=True)
+            rec = run_sampler(circuits, backend, shots=4000, names=names, meta=dict(instance=key, run=r, params=params),
+                              out=RESULTS / f"hardware_{key}_r{r}.json")
+            print("done:", rec["backend"], rec["job_id"], "QPU s:", rec["usage_s"], flush=True)
