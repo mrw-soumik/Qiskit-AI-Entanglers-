@@ -1,0 +1,8 @@
+# secrets: never commit
+.env
+# local environment and caches
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+*.zip
