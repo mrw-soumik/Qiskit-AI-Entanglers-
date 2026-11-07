@@ -264,3 +264,39 @@ def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=
         Path(out).parent.mkdir(exist_ok=True)
         Path(out).write_text(json.dumps(record, indent=1))
     return record
+
+
+def hardware_circuits(lin, W, keep=0.25, starts=5, seed=7):
+    """The 9-site circuits for the noise model and IBM hardware, trained in noiseless simulation.
+
+    p1_full: p=1 with every coupling; p1_sparse / p2_sparse: couplings >= keep * strongest;
+    control_uniform: gamma = beta = 0, which ideally gives uniformly random layouts (noise-floor check).
+    """
+    W_sparse = sparsify(W, keep)
+    circuits, names, params = [], [], {}
+    for name, Wc, p in [("p1_full", W, 1), ("p1_sparse", W_sparse, 1), ("p2_sparse", W_sparse, 2)]:
+        H, _ = qubo_to_ising(lin, Wc)
+        H = H / np.abs(H.coeffs).max()
+        ans = qaoa_circuit(H, p)
+        best, _ = train_qaoa(ans, H, starts=starts, seed=seed)
+        circuits.append(ans.assign_parameters(best.x))
+        names.append(name)
+        params[name] = best.x.tolist()
+    circuits.append(qaoa_circuit(H, 1).assign_parameters([0.0, 0.0]))
+    names.append("control_uniform")
+    return circuits, names, params
+
+
+if __name__ == "__main__":
+    # `python wakewise.py hardware`: run the 9-site circuits on IBM hardware (credentials from .env) and save
+    # results/hardware_9site.json; the notebook then loads that file. Waits for the queue, however long.
+    import sys
+    if sys.argv[1:] == ["hardware"]:
+        wd, u = load_wind()
+        lin, W, _ = build_qubo(grid(3, 3, 5 * TURBINE["D"]), wd, u)
+        circuits, names, params = hardware_circuits(lin, W)
+        backend = hardware_backend()
+        print("submitting to", backend.name, flush=True)
+        rec = run_sampler(circuits, backend, shots=4000, names=names, meta=dict(instance="hw_9", params=params),
+                          out=RESULTS / "hardware_9site.json")
+        print("done:", rec["backend"], rec["job_id"], "usage_s:", rec["usage_s"])
