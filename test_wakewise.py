@@ -31,15 +31,24 @@ def test_bit_order_round_trip():
     assert ww.bits([0b0110], 4).tolist() == [[0, 1, 1, 0]]  # integer bit i -> site i
 
 
-def test_wake_only_hits_downstream_turbines():
-    xy = np.array([[0.0, 0.0], [650.0, 0.0], [0.0, 650.0]])  # site 1 east of 0, site 2 north of 0
-    west = np.array([270.0])                                   # wind FROM the west blows toward the east
-    assert ww.wake_deficit(xy, 0, 1, west)[0] > 0              # 1 is downstream of 0
-    assert ww.wake_deficit(xy, 1, 0, west)[0] == 0             # 0 is upstream of 1
-    assert ww.wake_deficit(xy, 0, 2, west)[0] == 0             # 2 is crosswind of 0
-    near, far = ww.wake_deficit(np.array([[0, 0], [650, 0], [1300, 0.0]]), 0, 1, west), \
-        ww.wake_deficit(np.array([[0, 0], [650, 0], [1300, 0.0]]), 0, 2, west)
-    assert near[0] > far[0] > 0                                # the wake recovers with distance
+def test_pywake_pair_losses_are_physical():
+    # Three sites in an east-west row, 650 m apart, with a steady westerly wind at 9 m/s.
+    xy = np.array([[0.0, 0.0], [650.0, 0.0], [1300.0, 0.0]])
+    wd, u = np.full(24, 270.0), np.full(24, 9.0)
+    lin, W, info = ww.build_qubo(xy, wd, u)
+    assert np.allclose(W, W.T) and np.all(np.diag(W) == 0) and np.all(W >= 0)
+    assert W[0, 1] > W[0, 2] > 0                     # the wake recovers with distance
+    one = ww.farm_energy(ww.wake_model(), xy[:1], wd, u)[0]
+    assert np.isclose(one, info["E"])                # a lone turbine loses nothing
+    crosswind = np.array([[0.0, 0.0], [0.0, 650.0]])  # north-south pair in a westerly: no shading
+    _, Wc, _ = ww.build_qubo(crosswind, wd, u)
+    assert Wc[0, 1] == 0
+
+
+def test_cvar_limits():
+    p = np.array([0.1, 0.2, 0.3, 0.4]); v = np.array([3.0, -1.0, 2.0, 0.0])
+    assert np.isclose(ww.cvar(p, v, 1.0), p @ v)     # alpha = 1 is the plain average
+    assert np.isclose(ww.cvar(p, v, 0.1), -1.0)      # a small alpha keeps only the best outcome
 
 
 def test_summarize_scores_samples():

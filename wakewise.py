@@ -1,7 +1,8 @@
 """WakeWise NL: wake-aware wind-turbine siting for Newfoundland's west coast, solved with QAOA.
 
-Classical side: real ECCC hourly wind -> Jensen wake model -> QUBO -> exact / greedy / random baselines.
-Quantum side: QUBO -> Ising Hamiltonian -> QAOA (simulator, noisy simulator, IBM hardware).
+Classical side: real ECCC hourly wind -> DTU PyWake wind-farm simulation (Jensen wake model,
+generic 4 MW turbine) -> QUBO -> exact / greedy / random baselines.
+Quantum side: QUBO -> Ising Hamiltonian -> QAOA (simulator, IBM noise models, IBM hardware).
 """
 import json
 import os
@@ -15,9 +16,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent
 DATA, RESULTS = ROOT / "data", ROOT / "results"
 
-# Generic 4 MW onshore turbine (illustrative values, not a specific product).
-TURBINE = dict(P_rated=4.0, D=130.0, hub=110.0, cut_in=3.0, rated=12.0, cut_out=25.0, Ct=0.8)
-WAKE_K = 0.075  # Jensen wake-decay constant, common onshore value
+D, HUB, RATED_KW = 130.0, 110.0, 4000  # rotor diameter (m), hub height (m), rated power
+WAKE_K = 0.075                          # Jensen wake-expansion constant, common onshore value
 HOURS = 8760
 
 ECCC_URL = ("https://api.weather.gc.ca/collections/climate-hourly/items?CLIMATE_IDENTIFIER={cid}"
@@ -35,7 +35,7 @@ def fetch_wind(cid="8404343", year=2025, path=None):
     return df, url
 
 
-def load_wind(path=DATA / "wreckhouse_2025_hourly.csv", hub=TURBINE["hub"], alpha=0.14):
+def load_wind(path=DATA / "wreckhouse_2025_hourly.csv", hub=HUB, alpha=0.14):
     """Return per-hour wind direction (degrees, blowing FROM) and hub-height speed (m/s).
 
     ECCC gives direction in tens of degrees (0 = calm) and 10 m speed in km/h. Hours with a
@@ -49,11 +49,33 @@ def load_wind(path=DATA / "wreckhouse_2025_hourly.csv", hub=TURBINE["hub"], alph
     return wd, u
 
 
-# ---------------------------------------------------------------- physics
-def power_mw(u, t=TURBINE):
-    """Generic power curve: cubic rise from cut-in to rated speed, flat to cut-out."""
-    ramp = t["P_rated"] * ((np.asarray(u) - t["cut_in"]) / (t["rated"] - t["cut_in"])) ** 3
-    return np.where((u >= t["cut_in"]) & (u < t["cut_out"]), np.minimum(ramp, t["P_rated"]), 0.0)
+# ---------------------------------------------------------------- wind-farm physics (DTU PyWake)
+def turbine():
+    """Generic 4 MW, 130 m rotor, 110 m hub turbine from PyWake's physics-based generic model
+    (realistic power and thrust curves: thrust falls above rated wind speed, as on real turbines)."""
+    from py_wake.wind_turbines.generic_wind_turbines import GenericWindTurbine
+    return GenericWindTurbine("Generic 4 MW", diameter=D, hub_height=HUB, power_norm=RATED_KW,
+                              turbulence_intensity=0.1)
+
+
+def wake_model(kind="jensen"):
+    """PyWake wind-farm model: 'jensen' (Jensen/Park top-hat wake, used to build the QUBO) or
+    'gaussian' (Bastankhah & Porte-Agel 2014, a more modern model used only as an independent check)."""
+    from py_wake.site import UniformSite
+    site = UniformSite(ti=0.1)
+    if kind == "jensen":
+        from py_wake import NOJ
+        return NOJ(site, turbine(), k=WAKE_K)
+    from py_wake.literature.gaussian_models import Bastankhah_PorteAgel_2014
+    return Bastankhah_PorteAgel_2014(site, turbine(), k=0.0324555)
+
+
+def farm_energy(model, xy, wd, u):
+    """Annual energy (MWh/yr) of each turbine placed at xy, simulated hour by hour with all wakes."""
+    if len(xy) == 0:
+        return np.zeros(0)
+    sim = model(xy[:, 0], xy[:, 1], wd=wd, ws=u, time=True)
+    return sim.Power.values.mean(axis=1) * HOURS / 1e6
 
 
 def grid(rows, cols, spacing):
@@ -61,49 +83,31 @@ def grid(rows, cols, spacing):
     return np.array([(c * spacing, r * spacing) for r in range(rows) for c in range(cols)], float)
 
 
-def wake_deficit(xy, i, j, wd, t=TURBINE, k=WAKE_K):
-    """Fractional speed deficit at turbine j caused by turbine i, per hour (Jensen top-hat wake)."""
-    th = np.radians(wd)
-    fx, fy = -np.sin(th), -np.cos(th)          # direction the air moves (wd is where it comes FROM)
-    dx, dy = xy[j] - xy[i]
-    down = dx * fx + dy * fy                   # distance j sits downstream of i
-    cross = np.abs(dx * fy - dy * fx)          # sideways offset from i's wake centreline
-    r = t["D"] / 2
-    inside = (down > 0) & (cross < r + k * down)
-    return np.where(inside, (1 - np.sqrt(1 - t["Ct"])) / (1 + k * down / r) ** 2, 0.0)
-
-
-def build_qubo(xy, wd, u, cost_frac=0.88, cable_frac=0.02, t=TURBINE, k=WAKE_K):
+def build_qubo(xy, wd, u, cost_frac=0.88, cable_frac=0.02, model=None):
     """QUBO in MWh/yr: f(x) = lin . x + sum_{i<j} W_ij x_i x_j  (lower is better).
 
-    lin_i = -(E - c_i): free-stream energy of a turbine minus its annualized cost, where cost is
+    lin_i = -(E - c_i): free-stream energy of one turbine minus its annualized cost, where cost is
             cost_frac * E plus cable_frac * E per grid spacing of cable to the substation at site 0
             (illustrative economics expressed as energy).
-    W_ij  = energy lost when both i and j are built (i shading j plus j shading i).
+    W_ij  = energy the pair loses to each other's wakes when both i and j are built, simulated with
+            PyWake on that pair alone (2 E minus the pair's energy).
     """
+    model = model or wake_model("jensen")
     n = len(xy)
-    p_free = power_mw(u, t)
-    E = p_free.mean() * HOURS
-    loss = np.zeros((n, n))
+    E = farm_energy(model, xy[:1], wd, u)[0]
+    W = np.zeros((n, n))
     for i in range(n):
-        for j in range(n):
-            if i != j:
-                p_waked = power_mw(u * (1 - wake_deficit(xy, i, j, wd, t, k)), t)
-                loss[i, j] = (p_free - p_waked).mean() * HOURS
-    W = loss + loss.T
+        for j in range(i + 1, n):
+            W[i, j] = W[j, i] = 2 * E - farm_energy(model, xy[[i, j]], wd, u).sum()
     spacing = np.min(np.hypot(*(xy[1:] - xy[0]).T))
     cost = cost_frac * E + cable_frac * E * np.hypot(*(xy - xy[0]).T) / spacing
     return -(E - cost), W, dict(E=E, cost=cost)
 
 
-def layout_aep(x, xy, wd, u, t=TURBINE, k=WAKE_K):
-    """Farm energy (MWh/yr) with sum-of-squares wake superposition: a non-pairwise check of the QUBO."""
+def layout_net(x, xy, wd, u, cost, model):
+    """Net value (MWh/yr) of a layout with every wake acting at once: a check of the pairwise QUBO."""
     on = np.flatnonzero(x)
-    total = 0.0
-    for j in on:
-        d2 = sum(wake_deficit(xy, i, j, wd, t, k) ** 2 for i in on if i != j)
-        total += power_mw(u * (1 - np.sqrt(d2)), t).mean() * HOURS
-    return total
+    return farm_energy(model, xy[on], wd, u).sum() - cost[on].sum()
 
 
 # ---------------------------------------------------------------- QUBO tools and baselines
@@ -173,16 +177,40 @@ def qaoa_circuit(H, reps):
     return qaoa_ansatz(H, reps=reps)
 
 
-def train_qaoa(ansatz, H, starts=5, seed=7, maxiter=300):
-    """Minimize <H> on the exact statevector estimator with COBYLA from several seeded starts."""
+def cvar(probabilities, values, alpha):
+    """Mean QUBO value of the best `alpha` share of outcomes (CVaR objective, Barkoutsos et al. 2020)."""
+    o = np.argsort(values)
+    pc = np.cumsum(probabilities[o])
+    k = min(int(np.searchsorted(pc, alpha)), len(o) - 1)
+    w = probabilities[o][:k + 1].copy()
+    w[-1] -= pc[k] - alpha
+    return float(w @ values[o][:k + 1] / alpha)
+
+
+def train_qaoa(ansatz, H, starts=5, seed=7, maxiter=300, values=None, alpha=None):
+    """Tune QAOA angles in exact noiseless simulation with COBYLA from several seeded starts.
+
+    alpha=None: minimize <H> (standard QAOA). alpha in (0, 1]: minimize the CVaR of the QUBO values
+    (`values`, indexed by measured integer), which rewards putting probability on the best layouts.
+    """
     from qiskit.primitives import StatevectorEstimator
+    from qiskit.quantum_info import Statevector
     from scipy.optimize import minimize
-    est = StatevectorEstimator()
-    cost = lambda th: float(est.run([(ansatz, H, th)]).result()[0].data.evs)
+    if alpha is None:
+        est = StatevectorEstimator()
+        cost = lambda th: float(est.run([(ansatz, H, th)]).result()[0].data.evs)
+    else:
+        cost = lambda th: cvar(Statevector(ansatz.assign_parameters(th)).probabilities(), values, alpha)
     rng = np.random.default_rng(seed)
     runs = [minimize(cost, rng.uniform(0, np.pi, ansatz.num_parameters), method="COBYLA",
                      options={"maxiter": maxiter}) for _ in range(starts)]
     return min(runs, key=lambda r: r.fun), [float(r.fun) for r in runs]
+
+
+def ideal_probabilities(circuit, params):
+    """Exact outcome probabilities, indexed by measured integer (no sampling noise)."""
+    from qiskit.quantum_info import Statevector
+    return Statevector(circuit.assign_parameters(params)).probabilities()
 
 
 def ideal_counts(circuit, params, shots=10_000, seed=11):
@@ -192,23 +220,55 @@ def ideal_counts(circuit, params, shots=10_000, seed=11):
     return StatevectorSampler(seed=seed).run([qc], shots=shots).result()[0].data.meas.get_int_counts()
 
 
+def hardware_circuits(lin, W, values, keep=0.25, alpha=0.25, starts=5, seed=7):
+    """The 9-site circuits for the noise models and IBM hardware, trained in noiseless simulation.
+
+    p1_full: p=1 with every coupling; p1_sparse / p2_sparse: couplings >= keep * strongest;
+    control_uniform: gamma = beta = 0, which ideally gives uniformly random layouts (noise-floor check).
+    """
+    W_sparse = sparsify(W, keep)
+    circuits, names, params = [], [], {}
+    for name, Wc, p in [("p1_full", W, 1), ("p1_sparse", W_sparse, 1), ("p2_sparse", W_sparse, 2)]:
+        H, _ = qubo_to_ising(lin, Wc)
+        H = H / np.abs(H.coeffs).max()
+        ans = qaoa_circuit(H, p)
+        best, _ = train_qaoa(ans, H, starts=starts, seed=seed, values=values, alpha=alpha)
+        circuits.append(ans.assign_parameters(best.x))
+        names.append(name)
+        params[name] = best.x.tolist()
+    circuits.append(qaoa_circuit(H, 1).assign_parameters([0.0, 0.0]))
+    names.append("control_uniform")
+    return circuits, names, params
+
+
+# ---------------------------------------------------------------- IBM hardware
 def load_env(path=ROOT / ".env"):
-    """Read KEY=VALUE lines from .env into os.environ (already-set variables win)."""
+    """Read KEY=VALUE lines from a .env file into os.environ (already-set variables win)."""
     if Path(path).exists():
         for line in Path(path).read_text().splitlines():
             key, sep, val = line.partition("=")
             if sep and not key.strip().startswith("#"):
-                os.environ.setdefault(key.strip(), val.strip())
+                os.environ.setdefault(key.strip(), val.strip().strip("'\""))
 
 
-def hardware_backend():
-    """IBM backend from .env credentials: QISKIT_IBM_BACKEND if set, else the least busy one."""
+def credentials(env_path=ROOT / ".env", json_path=ROOT / "api.json"):
+    """(apikey, crn) from api.json (the Fall Fest IBM example's format) or else from .env; both are gitignored."""
+    if Path(json_path).exists():
+        c = json.loads(Path(json_path).read_text())
+        return c["apikey"], c["crn"]
+    load_env(env_path)
+    env = os.environ.get
+    return env("apikey") or env("QISKIT_IBM_TOKEN"), env("crn") or env("QISKIT_IBM_INSTANCE")
+
+
+def hardware_backend(env_path=ROOT / ".env"):
+    """IBM backend via channel ibm_quantum_platform (as in the Fall Fest example); QISKIT_IBM_BACKEND picks a
+    device, otherwise the least busy one."""
     from qiskit_ibm_runtime import QiskitRuntimeService
-    load_env()
-    service = QiskitRuntimeService(channel=os.environ.get("QISKIT_IBM_CHANNEL") or "ibm_cloud",
-                                   token=os.environ["QISKIT_IBM_TOKEN"],
-                                   instance=os.environ["QISKIT_IBM_INSTANCE"])
-    name = os.environ.get("QISKIT_IBM_BACKEND")
+    token, crn = credentials(env_path)
+    env = os.environ.get
+    service = QiskitRuntimeService(channel=env("QISKIT_IBM_CHANNEL") or "ibm_quantum_platform", token=token, instance=crn)
+    name = env("QISKIT_IBM_BACKEND")
     return service.backend(name) if name else service.least_busy(operational=True, simulator=False)
 
 
@@ -266,37 +326,19 @@ def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=
     return record
 
 
-def hardware_circuits(lin, W, keep=0.25, starts=5, seed=7):
-    """The 9-site circuits for the noise model and IBM hardware, trained in noiseless simulation.
-
-    p1_full: p=1 with every coupling; p1_sparse / p2_sparse: couplings >= keep * strongest;
-    control_uniform: gamma = beta = 0, which ideally gives uniformly random layouts (noise-floor check).
-    """
-    W_sparse = sparsify(W, keep)
-    circuits, names, params = [], [], {}
-    for name, Wc, p in [("p1_full", W, 1), ("p1_sparse", W_sparse, 1), ("p2_sparse", W_sparse, 2)]:
-        H, _ = qubo_to_ising(lin, Wc)
-        H = H / np.abs(H.coeffs).max()
-        ans = qaoa_circuit(H, p)
-        best, _ = train_qaoa(ans, H, starts=starts, seed=seed)
-        circuits.append(ans.assign_parameters(best.x))
-        names.append(name)
-        params[name] = best.x.tolist()
-    circuits.append(qaoa_circuit(H, 1).assign_parameters([0.0, 0.0]))
-    names.append("control_uniform")
-    return circuits, names, params
-
-
 if __name__ == "__main__":
-    # `python wakewise.py hardware`: run the 9-site circuits on IBM hardware (credentials from .env) and save
-    # results/hardware_9site.json; the notebook then loads that file. Waits for the queue, however long.
+    # `python wakewise.py hardware`: run the 9-site and 12-site circuits on IBM hardware (credentials from api.json
+    # or .env) and save results/hardware_{9,12}site.json, which the notebook loads. Waits for the queue.
     import sys
-    if sys.argv[1:] == ["hardware"]:
+    if sys.argv[1:2] == ["hardware"]:
         wd, u = load_wind()
-        lin, W, _ = build_qubo(grid(3, 3, 5 * TURBINE["D"]), wd, u)
-        circuits, names, params = hardware_circuits(lin, W)
         backend = hardware_backend()
-        print("submitting to", backend.name, flush=True)
-        rec = run_sampler(circuits, backend, shots=4000, names=names, meta=dict(instance="hw_9", params=params),
-                          out=RESULTS / "hardware_9site.json")
-        print("done:", rec["backend"], rec["job_id"], "usage_s:", rec["usage_s"])
+        for rows, cols in [(3, 3), (3, 4)]:
+            n = rows * cols
+            lin, W, _ = build_qubo(grid(rows, cols, 5 * D), wd, u)
+            _, _, values = exact(lin, W)
+            circuits, names, params = hardware_circuits(lin, W, values)
+            print(f"submitting {n}-site circuits to {backend.name}", flush=True)
+            rec = run_sampler(circuits, backend, shots=4000, names=names, meta=dict(instance=f"{n} sites", params=params),
+                              out=RESULTS / f"hardware_{n}site.json")
+            print("done:", rec["backend"], rec["job_id"], "usage_s:", rec["usage_s"], flush=True)

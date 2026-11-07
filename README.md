@@ -2,20 +2,21 @@
 
 **Team AI Entanglers** · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
 
-Wind turbines slow the air behind them. On a parcel next to Wreckhouse, NL (next to the Codroy Valley, where large wind-to-hydrogen farms are proposed), we ask which candidate sites should get a turbine so the farm delivers the most net clean energy once those wake losses are counted. Every wake loss involves a *pair* of turbines, so the problem is a QUBO that maps one-to-one onto an Ising Hamiltonian (turbine value = Z field, wake loss = ZZ coupling). We solve it with QAOA in Qiskit and test it against exact enumeration, a greedy planner and random guessing on the same instances, in noiseless simulation, a realistic IBM Heron noise model and on IBM quantum hardware.
+Wind turbines slow the air behind them (their *wake*), so turbines placed in each other's wakes waste wind. On a parcel at Wreckhouse, NL, beside the Codroy Valley where a large wind-to-hydrogen project is proposed, we ask which candidate sites should get a turbine so the farm delivers the most net clean energy. Using **real 2025 hourly wind** (Environment and Climate Change Canada) and **DTU PyWake** (an industry-standard wind-farm simulator), every wake loss is between a *pair* of turbines, so the problem is a QUBO that maps one-to-one onto an Ising Hamiltonian: turbine value = Z field, wake loss = ZZ coupling. We solve it with **QAOA in Qiskit** and test it against exact enumeration, a greedy planner and random guessing on the same instances: noiseless, under realistic noise models of IBM hardware (including IBM Quantum System One in Quebec), and on IBM quantum hardware.
 
-**Start here:** [`wakewise.ipynb`](wakewise.ipynb) (all results with saved outputs; its first section documents environment, data, seeds and how to reproduce everything).
+**Start here:** [`wakewise.ipynb`](wakewise.ipynb). All results are saved in it; its first section documents environment, data, seeds and how to reproduce everything. Slides: [`slides/`](slides/).
 
 ## Results at a glance
 
 | | |
 |---|---|
-| Real input | 8,740 hours of 2025 hourly wind at Wreckhouse (Environment and Climate Change Canada) |
-| Classical | 12-site optimum builds 6 turbines; a greedy planner misses 9.6% of achievable net energy |
-| QAOA, noiseless, 12 qubits | p=3 returns the optimal layout in 1.26% of shots (about 50x random): 236 shots find it with 95% confidence vs 12,269 for random guessing |
-| QAOA, Heron noise model, 9 qubits | signal survives (gap closed 0.39 to 0.51 vs 0.44 to 0.57 noiseless); sparsifying weak couplings cuts 2-qubit gates 144 to 64 |
-| IBM hardware | see Section 6 of the notebook and `results/hardware_9site.json` |
-| Model check | pairwise QUBO ranks layouts like a multi-wake model (Spearman 0.99) |
+| Real input | 8,740 hours of 2025 Wreckhouse wind; one 4 MW turbine alone ≈ 18,500 MWh/yr (53% capacity factor) |
+| Physics | DTU PyWake: a badly placed neighbour costs up to 1.9% of a turbine's output; a dense 12-turbine block loses 3.6% |
+| Classical | 12-site optimum builds 10 turbines (≈ 180 GWh/yr, ≈ 10,600 NL homes); greedy falls 195 MWh/yr short; greedy is optimal on 9 sites |
+| QAOA, noiseless, 12 qubits | depth 3 with CVaR training returns the optimal layout in 9.2% of shots (≈ 380× random): 31 shots find it with 95% confidence vs 12,269 for random guessing |
+| QAOA, IBM Quebec noise model, 9 qubits | sparsified depth-1 circuit returns the optimum in 5.7% of shots (28× random); sparsifying cuts two-qubit gates 130 → 81 |
+| IBM hardware | Section 6 of the notebook and `results/hardware_9site.json` |
+| Model check | QUBO ranks layouts like full PyWake simulations (rank correlation 0.99 with Jensen and Gaussian wake models); its optimum is best under both |
 
 No quantum advantage is claimed: at these sizes the exact answer is computable, which is what lets us measure QAOA's quality honestly.
 
@@ -26,23 +27,23 @@ git clone https://github.com/mrw-soumik/Qiskit-AI-Entanglers-.git && cd Qiskit-A
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python test_wakewise.py                                                   # self-checks
-jupyter nbconvert --to notebook --execute --inplace wakewise.ipynb        # ~2 min, no IBM account needed
+jupyter nbconvert --to notebook --execute --inplace wakewise.ipynb        # ~2-4 min, no IBM account needed
 ```
 
-To rerun the hardware experiment: `cp .env.example .env`, add your IBM Quantum API key and instance CRN, then
-`RUN_HARDWARE=1 jupyter nbconvert --to notebook --execute --inplace wakewise.ipynb`. `.env` is gitignored.
+To rerun the hardware experiment: `cp .env.example .env`, paste your IBM Quantum `apikey` and `crn`, then
+`python wakewise.py hardware` and re-execute the notebook. `.env` is gitignored.
 
 ## Files
 
 | Path | What |
 |---|---|
 | `wakewise.ipynb` | Working notebook with saved outputs |
-| `wakewise.py` | Wind data, wake model, QUBO, Ising mapping, baselines, QAOA and hardware helpers |
-| `test_wakewise.py` | Self-checks (Ising energy equals QUBO value for every bitstring, bit order, wake geometry, scoring) |
+| `wakewise.py` | Wind data, PyWake wind-farm model, QUBO, Ising mapping, baselines, QAOA (incl. CVaR) and IBM hardware helpers |
+| `test_wakewise.py` | Self-checks (Ising energy equals QUBO for every bitstring, bit order, wake physics, CVaR, scoring) |
 | `data/` | Frozen ECCC wind data and its provenance (`data/SOURCE.md`) |
-| `results/` | Saved noisy-simulation and hardware runs: device, job ID, options, calibration snapshot, counts |
-| `figures/` | Figures used in the slides |
+| `results/` | Noise-model and hardware runs (device, job ID, options, calibration snapshot, counts) and `summary.json` (every number in the slides) |
+| `figures/`, `slides/` | Figures and the presentation (PPTX and PDF) |
 
 ## Credits
 
-QAOA workflow pattern adapted from Tinh Bui's *Quantum Optimization* workshop notebook (Qiskit Fall Fest 2026); runtime setup from IBM's *Qiskit 101* hands-on notebook (Apache 2.0); Qiskit, Qiskit Aer, Qiskit IBM Runtime; ECCC hourly climate data (Open Government Licence, Canada); Jensen/Park wake model; QAOA (Farhi, Goldstone and Gutmann, 2014). Full credits and our own contribution are listed in Section 10 of the notebook.
+QAOA workflow pattern adapted from Tinh Bui's *Quantum Optimization* workshop notebook (Qiskit Fall Fest 2026); IBM runtime setup from IBM's *Qiskit 101* notebook (Apache 2.0) and the Fall Fest IBM hardware example; Qiskit, Qiskit Aer, Qiskit IBM Runtime; DTU PyWake (MIT); ECCC hourly climate data (Open Government Licence, Canada); Jensen/Park and Bastankhah-Porte-Agel wake models; QAOA (Farhi et al., 2014); CVaR objective (Barkoutsos et al., 2020). Full credits and our own contribution: Section 10 of the notebook.
