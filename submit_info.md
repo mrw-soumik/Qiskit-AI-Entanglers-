@@ -1,11 +1,7 @@
 # Qiskit Fall Fest 2026 submission
 
 - **Team name:** AI Entanglers
-- **Team number:** TEAM_NUMBER
-- **Team members:**
-  - Mostafa Wasib
-  - MEMBER_2
-  - MEMBER_3
+- **Team members:** Mostafa Wasib (solo team)
 - **GitHub repository:** https://github.com/mrw-soumik/Qiskit-AI-Entanglers- (branch `main`)
 
 **Project:** WakeWise NL, wake-aware wind-turbine siting for Newfoundland's west coast with QAOA.
