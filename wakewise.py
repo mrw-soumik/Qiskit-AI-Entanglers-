@@ -212,11 +212,21 @@ def hardware_backend():
     return service.backend(name) if name else service.least_busy(operational=True, simulator=False)
 
 
-def run_sampler(circuits, backend, shots, out=None, label=""):
+def device_errors(backend):
+    """Median two-qubit-gate and readout error of the device at run time (calibration snapshot)."""
+    t = backend.target
+    two_q = next((g for g in ("cz", "ecr", "cx") if g in t.operation_names), None)
+    med = lambda op: float(np.median([p.error for p in t[op].values() if p is not None and p.error is not None]))
+    return dict(two_qubit_gate=two_q, median_2q_error=med(two_q) if two_q else None,
+                median_readout_error=med("measure"))
+
+
+def run_sampler(circuits, backend, shots, out=None, names=None, meta=None, seed=None):
     """Transpile (level 3) and sample on a backend with dynamical decoupling + gate twirling.
 
-    Works for real IBM devices and for local fake/Aer backends (where the error-suppression
-    options are ignored). Saves counts, device, settings and circuit resources to JSON.
+    Works for real IBM devices and for local fake backends (which ignore the error-suppression
+    options; `seed` fixes their noise sampling). Saves counts, device, calibration snapshot,
+    settings and per-circuit resources to JSON so results can be inspected without rerunning.
     """
     from qiskit.transpiler import generate_preset_pass_manager
     from qiskit_ibm_runtime import SamplerV2
@@ -232,15 +242,18 @@ def run_sampler(circuits, backend, shots, out=None, label=""):
     sampler.options.dynamical_decoupling.sequence_type = "XY4"
     sampler.options.twirling.enable_gates = True
     sampler.options.twirling.num_randomizations = "auto"
+    if seed is not None:
+        sampler.options.simulator.seed_simulator = seed
     t0 = time.time()
     job = sampler.run(isa)
     res = job.result()
-    record = dict(label=label, backend=backend.name, job_id=job.job_id(), shots=shots,
-                  wall_s=round(time.time() - t0, 1),
-                  utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                  options=dict(optimization_level=3, dynamical_decoupling="XY4", twirling_gates=True),
+    record = dict(backend=backend.name, job_id=job.job_id(), shots=shots, wall_s=round(time.time() - t0, 1),
+                  utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), calibration=device_errors(backend),
+                  options=dict(optimization_level=3, seed_transpiler=1, dynamical_decoupling="XY4",
+                               twirling_gates=True, num_randomizations="auto", seed_simulator=seed),
+                  names=names or [f"circuit_{i}" for i in range(len(isa))], meta=meta or {},
                   circuits=[dict(two_qubit_gates=sum(v for g, v in c.count_ops().items() if g in ("cz", "ecr", "cx")),
-                                 depth=c.depth(), layout=c.layout.final_index_layout() if c.layout else None)
+                                 depth=c.depth(), physical_qubits=c.layout.final_index_layout() if c.layout else None)
                             for c in isa],
                   counts=[{str(k): v for k, v in r.data.meas.get_int_counts().items()} for r in res])
     try:
@@ -248,6 +261,6 @@ def run_sampler(circuits, backend, shots, out=None, label=""):
     except Exception:  # local fake backends have no usage metering
         record["usage_s"] = None
     if out:
-        RESULTS.mkdir(exist_ok=True)
+        Path(out).parent.mkdir(exist_ok=True)
         Path(out).write_text(json.dumps(record, indent=1))
     return record

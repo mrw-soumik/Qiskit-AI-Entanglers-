@@ -1,0 +1,13 @@
+# Python 3.12. Direct dependencies, pinned to the versions used for the saved results.
+qiskit[visualization]==2.6.2
+qiskit-aer==0.18.2
+qiskit-ibm-runtime==0.51.0
+numpy==2.5.4
+scipy==1.18.1
+pandas==3.1.1
+matplotlib==3.11.2
+pylatexenc==2.11
+jupyter==1.1.1
+nbconvert==7.17.2
+ipykernel==7.4.0
+Jinja2==3.1.6
