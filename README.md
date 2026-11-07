@@ -1,6 +1,6 @@
 # WakeWise NL: wake-aware wind-turbine siting for Newfoundland's west coast with QAOA
 
-**Team AI Entanglers** (Mostafa Wasib) · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
+**Team AI Entanglers** (Mostafa Wasib and Mahmoud) · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
 
 Wind turbines slow the air behind them (their *wake*), so turbines placed in each other's wakes waste wind. On a parcel at Wreckhouse, NL, beside the Codroy Valley where a large wind-to-hydrogen project is proposed, we ask which candidate sites should get a turbine so the farm delivers the most net clean energy, and whether that choice holds up from one year's wind to the next. Using **three years of real hourly wind** (2023 to 2025, Environment and Climate Change Canada) and **DTU PyWake** (an industry-standard wind-farm simulator), every wake loss is between a *pair* of turbines, so the problem is a QUBO that maps one-to-one onto an Ising Hamiltonian: turbine value = Z field, wake loss = ZZ coupling. We solve it with **QAOA in Qiskit** and test it against exact enumeration, a greedy planner and random guessing on the same instances: noiseless, under an IBM noise model, and on real hardware, IBM Quantum System One in Quebec (`ibm_quebec`), with repeated runs.
 
