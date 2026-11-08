@@ -1,6 +1,6 @@
 # WakeWise NL: wake-aware wind-turbine siting for Newfoundland's west coast with QAOA
 
-**Team AI Entanglers** (Mostafa Wasib and Mahmoud Al-Moghrabi) · Team 8 · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
+**Team AI Entanglers** (Mostafa Wasib) · Team 8 · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
 
 Wind turbines slow the air behind them. This *wake* means a turbine standing downwind of another gets less wind, so where you put turbines matters.
 

@@ -2,7 +2,7 @@
 
 - **Team number:** 8
 - **Team name:** AI Entanglers
-- **Team members:** Mostafa Wasib, Mahmoud Al-Moghrabi
+- **Team member:** Mostafa Wasib
 - **GitHub repository:** https://github.com/mrw-soumik/Qiskit-AI-Entanglers- (branch `main`)
 
 **Project:** WakeWise NL, wake-aware wind-turbine siting for Newfoundland's west coast with QAOA.
