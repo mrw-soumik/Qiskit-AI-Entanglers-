@@ -2,7 +2,13 @@
 
 **Team AI Entanglers** (Mostafa Wasib and Mahmoud Al-Moghrabi) · Team 8 · Qiskit Fall Fest 2026 · Memorial University · *Quantum for a Sustainable Newfoundland and Labrador*
 
-Wind turbines slow the air behind them (their *wake*), so turbines placed in each other's wakes waste wind. At Wreckhouse, NL, beside the Codroy Valley where a large wind-to-hydrogen project is proposed, we ask which candidate sites should get a turbine so the farm delivers the most net clean energy, whether that choice holds up across **19 years of real wind** and on **real terrain**, and how far today's quantum hardware can take the search. Using real hourly wind from Environment and Climate Change Canada and **DTU PyWake** (an industry-standard wind-farm simulator), every wake loss is between a *pair* of turbines, so the problem is a QUBO that maps one-to-one onto an Ising Hamiltonian: turbine value = Z field, wake loss = ZZ coupling. We solve it with **QAOA in Qiskit**, set its angles without a training loop (an **AI predictor** tested against parameter transfer), and test everything against exact enumeration, a greedy planner and random guessing: noiseless, under an IBM noise model, and on **IBM Quantum System One in Quebec** (`ibm_quebec`) from 12 up to **24 qubits**, with repeated runs and controls.
+Wind turbines slow the air behind them. This *wake* means a turbine standing downwind of another gets less wind, so where you put turbines matters.
+
+**The question.** At Wreckhouse, NL, next to the Codroy Valley where a large wind-to-hydrogen project is proposed: which candidate sites should get a turbine so the farm makes the most clean energy? Does that choice hold up over **19 years of real wind** and on **real terrain**? And how far can today's quantum computers take the search?
+
+**How.** We use real hourly wind from Environment and Climate Change Canada and **DTU PyWake**, an industry-standard wind-farm simulator. Wake losses happen between *pairs* of turbines, so the problem is a QUBO: yes/no choices with pairwise penalties. That maps directly onto qubits: a turbine's value acts on its own qubit (a Z field) and a wake loss links two qubits (a ZZ coupling). We solve it with **QAOA in Qiskit**, and set QAOA's angles without a training loop: our **AI predictor**, tested against simply reusing one good set of angles.
+
+**How we check it.** Every result is compared with the exact best answer, a greedy planner and random guessing: in noiseless simulation, under an IBM noise model, and on **IBM Quantum System One in Quebec** (`ibm_quebec`) from 12 up to **24 qubits**, with repeated runs and control circuits.
 
 **Start here:** [`wakewise.ipynb`](wakewise.ipynb). All results are saved in it; its first section documents environment, data, seeds and how to reproduce everything. Slides: [`slides/`](slides/).
 
@@ -19,6 +25,8 @@ Wind turbines slow the air behind them (their *wake*), so turbines placed in eac
 | **24 qubits on `ibm_quebec`** | Gap closed 0.79 / 0.59 / 0.60 / 0.66 at 12 / 16 / 20 / 24 qubits (noiseless 0.84 / 0.65 / 0.66 / 0.76). At 24 qubits the exact best of 16,777,216 layouts appeared 4× in 24,000 shots (chance: 1 in 16.8 million). Matched control (same gates, one sign flipped): -1.09 to -0.85, below random as physics predicts |
 | Model check | QUBO ranks layouts like full PyWake simulations (rank correlation 0.99 with Jensen and 0.99 with Gaussian wake models) |
 | Wetland scenario | Keeping turbines out of an illustrative wetland buffer costs 519 MWh/yr; QAOA finds the new optimum 133× more often than random |
+
+*Gap closed* measures how far QAOA's samples move from random guessing toward the best layout: 0 = no better than random, 1 = the best layout every time.
 
 No quantum advantage is claimed: even at 24 sites the exact answer is computable in seconds, which is what lets us measure QAOA's quality honestly. Hardware: 21 jobs, 174 s of QPU in total.
 
